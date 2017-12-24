@@ -18,7 +18,7 @@ The monitor.sh file is currently used to safely deploy the bot to a cloud server
 
 ## Other functionality:
 
-* Upvote steem posts using provided **private active key** when a moderator uses a ☑ (default) on a steem post link.
+* Upvote steem posts using a provided **private active key** when a moderator uses a ☑ (default) on a steem post link.
 ![upvoter.png](https://i.imgur.com/dIrxW8w.png)
 
 ## Known bugs:
