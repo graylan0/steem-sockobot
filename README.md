@@ -7,7 +7,7 @@ A steem bot for discord servers. Handles basic functionality and allows for easy
 
 * **$price <SBD/STE/BTC>** - shows the current price of one of these coins (via coinmarketcap).
 ![price.png](https://i.imgur.com/zVYJJlN.png)
-* **$payout <NICKNAME>** - shows the potential payout of given user's posts that have yet to pay out (7 days old or younger).
+* **$payout /<NICKNAME>** - shows the potential payout of given user's posts that have yet to pay out (7 days old or younger).
 ![payout.png](https://i.imgur.com/nl0RQZm.png)
 * **$ping** - checks if the bot is responsive.
 ![ping.png](https://i.imgur.com/zSHbGgk.png)
