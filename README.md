@@ -5,6 +5,8 @@ A steem bot for discord servers. Handles basic functionality and allows for easy
 
 ```TOKEN=<BOT TOKEN> KEY=<PRIVATE POSTING KEY> NAME=<STEEM USERNAME> python3 bot.py``` to run SockoBot
 
+The monitor.sh file is currently used to safely deploy the bot to a cloud server without keeping private tokens and keys in the code. It will most likely be removed upon launch, as every developer has his way of handling this.
+
 ## Commands:
 
 * **$price <SBD/STE/BTC>** - shows the current price of one of these coins (via coinmarketcap).
