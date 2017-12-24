@@ -3,6 +3,8 @@ A steem bot for discord servers. Handles basic functionality and allows for easy
 
 ### MIND THAT THE BOT IS CURRENTLY WRITTEN IN POLISH AND WILL BE TRANSLATED BEFORE LAUNCH.
 
+```TOKEN=<BOT TOKEN> KEY=<PRIVATE POSTING KEY> NAME=<STEEM USERNAME> python3 bot.py``` to run SockoBot
+
 ## Commands:
 
 * **$price <SBD/STE/BTC>** - shows the current price of one of these coins (via coinmarketcap).
