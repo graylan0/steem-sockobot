@@ -18,4 +18,4 @@ A steem bot for discord servers. Handles basic functionality and allows for easy
 ![upvoter.png](https://i.imgur.com/dIrxW8w.png)
 
 ## Known bugs:
-* The bot will crashed if $payout is used on a user with really high reputation, like the top3 witnesses. This is easy to reproduce but I have yet to find a fix to it. Contributions are welcome.
+* The bot will crash if $payout is used on a user with really high reputation, like the top3 witnesses. This is easy to reproduce but I have yet to find a fix to it. Contributions are welcome.
