@@ -9,10 +9,13 @@ A steem bot for discord servers. Handles basic functionality and allows for easy
 ![price.png](https://i.imgur.com/zVYJJlN.png)
 * **$payout <NICKNAME>** - shows the potential payout of given user's posts that have yet to pay out (7 days old or younger).
 ![payout.png](https://i.imgur.com/nl0RQZm.png)
-* **$ping** - checks if bot is responsive.
+* **$ping** - checks if the bot is responsive.
 ![ping.png](https://i.imgur.com/zSHbGgk.png)
 
 ## Other functionality:
 
-* Upvote steem posts using provided account's **private active key** when a moderator uses a ☑ (default) on a steem post link.
+* Upvote steem posts using provided **private active key** when a moderator uses a ☑ (default) on a steem post link.
 ![upvoter.png](https://i.imgur.com/dIrxW8w.png)
+
+## Known bugs:
+* The bot will crashed if $payout is used on a user with really high reputation, like the top3 witnesses. This is easy to reproduce but I have yet to find a fix to it. Contributions are welcome.
