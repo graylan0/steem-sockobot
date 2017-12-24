@@ -1,0 +1,6 @@
+#!/bin/bash
+until bot.py; do
+    echo "'bot.py' crashed with exit code $?. Restarting..." >&2
+    TOKEN=$1 KEY=$2 NAME=jestemkioskiem python3 ~/my-discord-bots/bot.py
+    sleep 1
+done
