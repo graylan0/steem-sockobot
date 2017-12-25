@@ -70,7 +70,9 @@ async def command(msg,command):
 		ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 		total_p = fetch_payouts(blog)
-		await payout(total_p,sbd_usd,ste_usd,msg)
+		total_payout = await payout(total_p,sbd_usd,ste_usd)
+		await client.send_message(message.channel, "**@" + str(message.content[8:]) + "** otrzyma " + total_payout + "USD") # The print if you just want to run this from your shell.
+
 
 	else:
 		command_error = await client.send_message(msg.channel, "Zła komenda.")
@@ -80,23 +82,19 @@ async def command(msg,command):
 async def authorize(msg,user):
 	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
-<<<<<<< HEAD
-	embed=discord.Embed(title="SockoBot - a discord steem bot", url="https://github.com/Jestemkioskiem/steem-sockobot", color=0xe3b13c)
-	embed.add_field(name="Tytuł", value=str(p.title), inline=False)
-	embed.add_field(name="Autor", value=str("@"+p.author), inline=False)
-	embed.add_field(name="Nominujący", value=str('<@'+ msg.author.id +'>'), inline=False)
-	embed.add_field(name="Wiek", value=str(p.time_elapsed())[:-10], inline=False)
-	embed.add_field(name="Wypłata", value=str(p.reward), inline=False)
-	botmsg = await client.send_message(msg.channel, embed=embed)
-=======
+	ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
+	sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
+
 	embed=discord.Embed(title="SockoBot- a discord steem bot", url="https://github.com/Jestemkioskiem/steem-sockobot", color=0xe3b13c)
 	embed.add_field(name="Tytuł", value=str(p.title), inline=False)
 	embed.add_field(name="Autor", value=str("@"+p.author), inline=True)
 	embed.add_field(name="Nominujący", value=str('<@'+ msg.author.id +'>'), inline=True)
-	embed.add_field(name=, value=, inline=False)
+	embed.add_field(name="Wiek", value=str(p.time_elapsed())[:-10] +" godzin", inline=False)
 	embed.add_field(name="Wypłata", value=str(p.reward), inline=True)
-	embed.add_field(name="Wiek", value=str(p.time_elapsed())[:-10] +"godzin", inline=True)
->>>>>>> 545ba3b1717f29d6f4085eeb6657cfb7d3fd584b
+	embed.add_field(name="Wartość USD", value=await payout(p.reward,sbd_usd,ste_usd), inline=True)
+
+	
+	botmsg = await client.send_message(msg.channel, embed=embed)
 	reaction = await client.wait_for_reaction(['☑'], message=msg, check=is_mod) # Waiting for the emote
 	if check_age(p,0,48): 
 		upvote_post(msg,BOT_USER_NAME)
@@ -157,13 +155,13 @@ def fetch_payouts(blog):
 	return total
 
 # Calculates the potential payout of all posts on the blog.
-async def payout(total,sbd,ste,message):
+async def payout(total,sbd,ste):
 	total = float(total) * 0.8 # Currator cut, anywhere between 0.85 and 0.75.
 	totalsbd = str(total * 0.5 * float(sbd))[:6]
 	totalsp = total * 0.5 * float(ste)
 	totalsp = str(totalsp * 1/float(ste))[:6] # SBD is always worth 1$ in the steem blockchain, so price of SBD to price of STE is always 1/STE.
 	payout = str(float(totalsbd) + float(totalsp))[:6]
-	await client.send_message(message.channel, "**@" + str(message.content[8:]) + "** otrzyma " + payout + "USD : " + totalsbd + " USD w SBD oraz " + totalsp + " USD w SP." ) # The print if you just want to run this from your shell.
+	return payout
 # Deletes posts in channel_list channels older than given hours.
 async def del_old_mess(hours): 
 	currtime = datetime.datetime.now() - datetime.timedelta(hours=hours)
