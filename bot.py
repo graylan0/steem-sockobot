@@ -91,7 +91,7 @@ async def authorize(msg,user):
 	if check_age(p,0,48): 
 		upvote_post(msg,BOT_USER_NAME)
 		await client.delete_message(botmsg)
-		await client.send_message(msg.channel, 'Post autorstwa **@' + str(p.author) + '** o ID *' + str(msg.id) +'* został zaakceptowany przez ' + str('<@'+ reaction.user.id +'>'))
+		await client.send_message(msg.channel, 'Post autorstwa **@' + str(p.author) + '** nominowany przez ' + str('<@'+ msg.author.id +'>') + ' o ID *' + str(msg.id) +'* został zaakceptowany przez ' + str('<@'+ reaction.user.id +'>'))
 
 
 def check_age(post,low,high):
