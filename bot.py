@@ -37,10 +37,10 @@ channels_list = [ # Channels that the bot should remove old messages from with d
 async def command(msg,command):
 	command = str(command)
 	command = command[1:]
-	if command.startswith('ping'):
+	if command.lower().startswith('ping'):
 		await client.send_message(msg.channel,":ping_pong: Pong!")
 
-	elif command.startswith('price'):
+	elif command.lower().startswith('price'):
 		coin = command[6:]
 		btc_usd = cmc.ticker("bitcoin", limit="3", convert="USD")[0].get("price_usd", "none")
 		ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
@@ -55,7 +55,7 @@ async def command(msg,command):
 		else:
 			await client.send_message(msg.channel, "Znam tylko kursy STEEM, SBD i BTC.")
 
-	elif command.startswith('payout'):
+	elif command.lower().startswith('payout'):
 		user_name = command[7:]
 		blog = Blog(user_name).all()
 		all_posts = []
