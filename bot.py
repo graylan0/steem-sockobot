@@ -80,6 +80,7 @@ async def command(msg,command):
 async def authorize(msg,user):
 	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
+<<<<<<< HEAD
 	embed=discord.Embed(title="SockoBot - a discord steem bot", url="https://github.com/Jestemkioskiem/steem-sockobot", color=0xe3b13c)
 	embed.add_field(name="Tytuł", value=str(p.title), inline=False)
 	embed.add_field(name="Autor", value=str("@"+p.author), inline=False)
@@ -87,6 +88,15 @@ async def authorize(msg,user):
 	embed.add_field(name="Wiek", value=str(p.time_elapsed())[:-10], inline=False)
 	embed.add_field(name="Wypłata", value=str(p.reward), inline=False)
 	botmsg = await client.send_message(msg.channel, embed=embed)
+=======
+	embed=discord.Embed(title="SockoBot- a discord steem bot", url="https://github.com/Jestemkioskiem/steem-sockobot", color=0xe3b13c)
+	embed.add_field(name="Tytuł", value=str(p.title), inline=False)
+	embed.add_field(name="Autor", value=str("@"+p.author), inline=True)
+	embed.add_field(name="Nominujący", value=str('<@'+ msg.author.id +'>'), inline=True)
+	embed.add_field(name=, value=, inline=False)
+	embed.add_field(name="Wypłata", value=str(p.reward), inline=True)
+	embed.add_field(name="Wiek", value=str(p.time_elapsed())[:-10] +"godzin", inline=True)
+>>>>>>> 545ba3b1717f29d6f4085eeb6657cfb7d3fd584b
 	reaction = await client.wait_for_reaction(['☑'], message=msg, check=is_mod) # Waiting for the emote
 	if check_age(p,0,48): 
 		upvote_post(msg,BOT_USER_NAME)
