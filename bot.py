@@ -192,4 +192,4 @@ async def on_message(message):
 		await command(message, message.content)
 
 if __name__ == '__main__': # Starting the bot.
-	client.run('Mzk0NDkxMDMwMDU0ODk1NjI2.DSFGMA.9RmXTXkaFL7dqpOc2sV_UQul-sM')
+	client.run(os.getenv('TOKEN'))
