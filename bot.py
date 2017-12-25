@@ -21,6 +21,9 @@ cmc = Market() # Coinmarketcap API call.
 bot_role = 'sockobot' # Set a role for your bot here. Temporary fix.
 all_posts = [] # Need this global var later. Temporary fix.
 
+ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
+sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
+btc_usd = cmc.ticker("bitcoin", limit="3", convert="USD")[0].get("price_usd", "none")
 
 moderating_roles = ['kiosk' # A temporary way to handle moderation.
 ]
@@ -82,8 +85,6 @@ async def command(msg,command):
 async def authorize(msg,user):
 	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
-	ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
-	sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 
 	embed=discord.Embed(title="SockoBot- a discord steem bot", url="https://github.com/Jestemkioskiem/steem-sockobot", color=0xe3b13c)
 	embed.add_field(name="Tytuł", value=str(p.title), inline=False)
@@ -201,6 +202,9 @@ async def on_ready():
 # This is our event check. For simplicity's sake, everything happens here. You may add your own events, but commands are discouraged, for that, edit the command() function instead.
 @client.event
 async def on_message(message):
+	ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
+	sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
+	btc_usd = cmc.ticker("bitcoin", limit="3", convert="USD")[0].get("price_usd", "none")
 	
 	await del_old_mess(72)
 	if message.content.startswith('https'):
