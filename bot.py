@@ -28,6 +28,11 @@ moderating_roles = ['kiosk' # A temporary way to handle moderation.
 channels_list = [ # Channels that the bot should remove old messages from with del_old_mess()
 ]
 
+voting_power = {
+'394576081912594432' : 100, #oryginalny-kontent
+'394634726356418560' : 60, #utopian-tłumaczenia
+'394213531521777664' : 100, #utopian-inne
+}
 
 #########################
 # DEFINE FUNCTIONS HERE #
@@ -78,7 +83,7 @@ async def authorize(msg,user):
 	botmsg = await client.send_message(msg.channel, str('Tytuł: ' + str(p.title) + '\n\nTen post zosał nominowany przez ' + str('<@'+ msg.author.id +'>') + ' i jest autorstwa **@' + str(p.author) + ' **Statystyki: ' + str(p.time_elapsed())[:-10] + ' godzin temu. Wypłata: ' + str(p.reward)))	
 	reaction = await client.wait_for_reaction(['☑'], message=msg, check=is_mod) # Waiting for the emote
 	if check_age(p,0,48): 
-		upvote_post(msg.content,BOT_USER_NAME)
+		upvote_post(msg,BOT_USER_NAME)
 		await client.delete_message(botmsg)
 		await client.send_message(msg.channel, 'Post autorstwa **@' + str(p.author) + '** o ID *' + str(msg.id) +'* został zaakceptowany przez ' + str('<@'+ reaction.user.id +'>'))
 
@@ -101,10 +106,10 @@ def is_mod(reaction, user):
 			break
 		else:
 			return False
-def upvote_post(content, user):
-	link = str(content).split(' ')[0]
+def upvote_post(msg, user):
+	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
-	p.upvote(voter=user)
+	p.upvote(float(voting_power[msg.channel.id]),voter=user)
 
 def fetch_payouts(blog):
 	total = 0.0
