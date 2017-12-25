@@ -11,28 +11,23 @@ from discord.ext.commands import Bot
 from discord.ext import commands
 
 # Here you can modify the bot's prefix and description and wether it sends help in direct messages or not. @client.command is strongly discouraged, edit your commands into the command() function instead.
-client = Bot(description="Soćko-Bot", command_prefix='$', pm_help = True)
+client = Bot(description="Socko-Bot", command_prefix='$', pm_help = True)
 
 BOT_USER_NAME =  os.getenv('NAME') # Put your bot's steem username in here.
 BOT_PRIVATE_POSTING_KEY = os.getenv('KEY') # Put your bot's private posting key in here. Don't worry, it's protected by an encrypted wallet (on your first run you will be asked to set the password via shell).
 
 s = Steem(keys=[BOT_PRIVATE_POSTING_KEY])
 cmc = Market() # Coinmarketcap API call.
-bot_role = 'sockobot' # Set a role for all of your bots here. You need to give them such role on the discord server.
-all_posts = []
+bot_role = 'sockobot' # Set a role for your bot here. Temporary fix.
+all_posts = [] # Need this global var later. Temporary fix.
 
 
-allowed_channels = [
+moderating_roles = ['kiosk' # A temporary way to handle moderation.
 ]
 
-moderating_roles = ['kiosk'
+channels_list = [ # Channels that the bot should remove old messages from with del_old_mess()
 ]
 
-channels_list = [
-]
-
-tag_list = [
-]
 
 #########################
 # DEFINE FUNCTIONS HERE #
@@ -185,7 +180,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
 	
-	await del_old_mess(132)
+	await del_old_mess(72)
 	if message.content.startswith('https'):
 		await authorize(message, BOT_USER_NAME)
 	if message.content.startswith(client.command_prefix): # Setting up commands. You can add new commands in the commands() function at the top of the code.
