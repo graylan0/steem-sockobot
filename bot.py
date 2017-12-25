@@ -74,7 +74,7 @@ async def command(msg,command):
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 		total_p = fetch_payouts(blog)
 		total_payout = await payout(total_p,sbd_usd,ste_usd)
-		await client.send_message(message.channel, "**@" + str(message.content[8:]) + "** otrzyma " + total_payout + "USD") # The print if you just want to run this from your shell.
+		await client.send_message(msg.channel, "**@" + str(msg.content[8:]) + "** otrzyma " + total_payout + "USD") # The print if you just want to run this from your shell.
 
 
 	else:
