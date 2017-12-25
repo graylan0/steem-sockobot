@@ -46,7 +46,7 @@ async def command(msg,command):
 		ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 
-		if coin.lower() == 'steem':
+		if coin.lower() == 'ste' or coin.lower() == "steem":
 			await client.send_message(msg.channel, "Obecny kurs **STEEM (STE):** " + ste_usd + " USD")
 		elif coin.lower() == 'sbd':
 			await client.send_message(msg.channel, "Obecny kurs **Steem Dollar (SBD):** " + sbd_usd + " USD")
