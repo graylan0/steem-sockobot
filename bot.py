@@ -20,6 +20,7 @@ s = Steem(keys=[BOT_PRIVATE_POSTING_KEY])
 cmc = Market() # Coinmarketcap API call.
 bot_role = 'sockobot' # Set a role for your bot here. Temporary fix.
 all_posts = [] # Need this global var later. Temporary fix.
+react_dict = {}
 
 ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
 sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
@@ -35,6 +36,7 @@ voting_power = {
 '394576081912594432' : 100, #oryginalny-kontent
 '394634726356418560' : 60, #utopian-tłumaczenia
 '394213531521777664' : 100, #utopian-inne
+'394619960439341057' : 1,
 }
 
 #########################
@@ -85,6 +87,13 @@ async def command(msg,command):
 async def authorize(msg,user):
 	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
+	if check_age(p,0,48): 
+		upvote_post(msg,BOT_USER_NAME)
+		await client.send_message(msg.channel, 'Post autorstwa **@' + str(p.author) + '** nominowany przez ' + str('<@'+ msg.author.id +'>') + ' o ID *' + str(msg.id) +'* został zaakceptowany przez ' + str('<@'+ user.id +'>'))
+
+async def get_info(msg):
+	link = str(msg.content).split(' ')[0]
+	p = Post(link.split('@')[1])
 
 	embed=discord.Embed(color=0xe3b13c)
 	embed.add_field(name="Tytuł", value=str(p.title), inline=False)
@@ -94,14 +103,7 @@ async def authorize(msg,user):
 	embed.add_field(name="Wypłata", value=str(p.reward), inline=True)
 	embed.add_field(name="Wartość USD", value=await payout(p.reward,sbd_usd,ste_usd), inline=True)
 	embed.set_footer(text="SockoBot - a Steem bot by Vctr#5566 (@jestemkioskiem)")
-	
-	botmsg = await client.send_message(msg.channel, embed=embed)
-	reaction = await client.wait_for_reaction(['☑'], message=msg, check=is_mod) # Waiting for the emote
-	if check_age(p,0,48): 
-		upvote_post(msg,BOT_USER_NAME)
-		await client.delete_message(botmsg)
-		await client.send_message(msg.channel, 'Post autorstwa **@' + str(p.author) + '** nominowany przez ' + str('<@'+ msg.author.id +'>') + ' o ID *' + str(msg.id) +'* został zaakceptowany przez ' + str('<@'+ reaction.user.id +'>'))
-
+	return embed
 
 def check_age(post,low,high):
 	if post.time_elapsed() > datetime.timedelta(hours=low) and post.time_elapsed() < datetime.timedelta(hours=high):
@@ -208,9 +210,17 @@ async def on_message(message):
 	
 	await del_old_mess(72)
 	if message.content.startswith('https'):
-		await authorize(message, BOT_USER_NAME)
+		embed = await get_info(message)
+		botmsg = await client.send_message(message.channel, embed=embed)
+		react_dict[message.id] = botmsg.id
 	if message.content.startswith(client.command_prefix): # Setting up commands. You can add new commands in the commands() function at the top of the code.
 		await command(message, message.content)
 
+@client.event
+async def on_reaction_add(reaction, user):
+	if reaction.emoji == '☑':
+		await authorize(reaction.message, user)
+		botmsg = await client.get_message(reaction.message.channel, react_dict[reaction.message.id])
+		await client.delete_message(botmsg)
 if __name__ == '__main__': # Starting the bot.
 	client.run(os.getenv('TOKEN'))
