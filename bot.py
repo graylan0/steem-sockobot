@@ -26,17 +26,14 @@ ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "non
 sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 btc_usd = cmc.ticker("bitcoin", limit="3", convert="USD")[0].get("price_usd", "none")
 
-moderating_roles = ['kiosk' # A temporary way to handle moderation.
+moderating_roles = ['' # A temporary way to handle moderation.
 ]
 
 channels_list = [ # Channels that the bot should remove old messages from with del_old_mess()
 ]
 
-voting_power = {
-'394576081912594432' : 100, #oryginalny-kontent
-'394634726356418560' : 60, #utopian-tłumaczenia
-'394213531521777664' : 100, #utopian-inne
-'394619960439341057' : 1,
+voting_power = { # Decides how big of an upvote each channel gets.
+# 'channels_id' : 0-100 (% of your vote)
 }
 
 #########################
@@ -57,13 +54,13 @@ async def command(msg,command):
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 
 		if coin.lower() == 'ste' or coin.lower() == "steem":
-			await client.send_message(msg.channel, "Obecny kurs **STEEM (STE):** " + ste_usd + " USD")
+			await client.send_message(msg.channel, "Current price of **STEEM (STE):** " + ste_usd + " USD")
 		elif coin.lower() == 'sbd':
-			await client.send_message(msg.channel, "Obecny kurs **Steem Dollar (SBD):** " + sbd_usd + " USD")
+			await client.send_message(msg.channel, "Current price of **Steem Dollar (SBD):** " + sbd_usd + " USD")
 		elif coin.lower() == 'btc' or coin.lower() == "bitcoin":
-			await client.send_message(msg.channel, "Obecny kurs **Bitcoin (BTC):** " + btc_usd + " USD")
+			await client.send_message(msg.channel, "Current price of **Bitcoin (BTC):** " + btc_usd + " USD")
 		else:
-			await client.send_message(msg.channel, "Znam tylko kursy STEEM, SBD i BTC.")
+			await client.send_message(msg.channel, "I only know the price of STEEM, SBD and BTC.")
 
 	elif command.lower().startswith('payout'):
 		user_name = command[7:]
@@ -76,11 +73,11 @@ async def command(msg,command):
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 		total_p = fetch_payouts(blog)
 		total_payout = await payout(total_p,sbd_usd,ste_usd)
-		await client.send_message(msg.channel, "**@" + str(msg.content[8:]) + "** otrzyma " + total_payout + "USD") # The print if you just want to run this from your shell.
+		await client.send_message(msg.channel, "**@" + str(msg.content[8:]) + "** will receive " + total_payout + "USD") # The print if you just want to run this from your shell.
 
 
 	else:
-		command_error = await client.send_message(msg.channel, "Zła komenda.")
+		command_error = await client.send_message(msg.channel, "Wrong command.")
 		await asyncio.sleep(6)
 		await client.delete_message(command_error)
 
@@ -89,19 +86,19 @@ async def authorize(msg,user):
 	p = Post(link.split('@')[1])
 	if check_age(p,0,48): 
 		upvote_post(msg,BOT_USER_NAME)
-		await client.send_message(msg.channel, 'Post autorstwa **@' + str(p.author) + '** nominowany przez ' + str('<@'+ msg.author.id +'>') + ' o ID *' + str(msg.id) +'* został zaakceptowany przez ' + str('<@'+ user.id +'>'))
+		await client.send_message(msg.channel, 'Post authored by **@' + str(p.author) + '** nominated by ' + str('<@'+ msg.author.id +'>') + ' o ID *' + str(msg.id) +'* was accepted by ' + str('<@'+ user.id +'>'))
 
 async def get_info(msg):
 	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
 
 	embed=discord.Embed(color=0xe3b13c)
-	embed.add_field(name="Tytuł", value=str(p.title), inline=False)
-	embed.add_field(name="Autor", value=str("@"+p.author), inline=True)
-	embed.add_field(name="Nominujący", value=str('<@'+ msg.author.id +'>'), inline=True)
-	embed.add_field(name="Wiek", value=str(p.time_elapsed())[:-10] +" godzin", inline=False)
-	embed.add_field(name="Wypłata", value=str(p.reward), inline=True)
-	embed.add_field(name="Wartość USD", value=await payout(p.reward,sbd_usd,ste_usd), inline=True)
+	embed.add_field(name="Title", value=str(p.title), inline=False)
+	embed.add_field(name="Author", value=str("@"+p.author), inline=True)
+	embed.add_field(name="Nominator", value=str('<@'+ msg.author.id +'>'), inline=True)
+	embed.add_field(name="Age", value=str(p.time_elapsed())[:-10] +" hours", inline=False)
+	embed.add_field(name="Payout", value=str(p.reward), inline=True)
+	embed.add_field(name="Payout in USD", value=await payout(p.reward,sbd_usd,ste_usd), inline=True)
 	embed.set_footer(text="SockoBot - a Steem bot by Vctr#5566 (@jestemkioskiem)")
 	return embed
 
