@@ -1,7 +1,7 @@
 # steem-sockobot
 A steem bot for discord servers. Handles basic functionality and allows for easy addition of commands.
 
-### MIND THAT THE BOT IS CURRENTLY WRITTEN IN POLISH AND WILL BE TRANSLATED BEFORE LAUNCH.
+### MIND THAT THIS BRANCH CONTAINS POLISH STRINGS.
 
 ```TOKEN=<BOT TOKEN> KEY=<PRIVATE POSTING KEY> NAME=<STEEM USERNAME> python3 bot.py``` to run SockoBot
 
