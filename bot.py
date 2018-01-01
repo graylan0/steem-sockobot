@@ -3,6 +3,8 @@ import discord
 import asyncio
 import datetime
 import os
+import json
+import requests
 from coinmarketcap import Market
 from steem import Steem
 from steem.post import Post
@@ -36,6 +38,8 @@ voting_power = { # Decides how big of an upvote each channel gets.
 # 'channels_id' : 0-100 (% of your vote)
 }
 
+session = requests.Session()
+
 #########################
 # DEFINE FUNCTIONS HERE #
 #########################
@@ -64,14 +68,11 @@ async def command(msg,command):
 
 	elif command.lower().startswith('payout'):
 		user_name = command[7:]
-		blog = Blog(user_name).all()
-		all_posts = []
-		acc_posts = []
 		total_p = 0.0
 
 		ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
-		total_p = fetch_payouts(blog)
+		total_p = fetch_payouts(user_name)
 		total_payout = await payout(total_p,sbd_usd,ste_usd)
 		await client.send_message(msg.channel, "**@" + str(msg.content[8:]) + "** will receive " + total_payout + "USD") # The print if you just want to run this from your shell.
 
@@ -124,33 +125,30 @@ def upvote_post(msg, user):
 	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
 	p.upvote(float(voting_power[msg.channel.id]),voter=user)
-
-def fetch_payouts(blog):
-	total = 0.0
-	all_posts = []
-	acc_posts = []
-
-	for a in blog: # Storing all posts in a list as links.
-		astr = str(a).split("-")[1:]
-		astr = "-".join(astr)
-		astr = astr.replace(">", "")
-		astr = "https://steemit.com/" + astr
-		all_posts.append(astr)
-
-	x = 0
-	while x < len(all_posts): # Storing all posts that are less than a week old in a list, with an accuracy of 1 minute.
-		post = Post(str(all_posts[x]))
-		if post.time_elapsed() < datetime.timedelta(days=7):
-			acc_posts.append(all_posts[x])
-		x+= 1
 	
-	x = 0
-	while x < len(acc_posts): # Collecting rewards for each post and storing them in the "total" variable.
-		post = Post(acc_posts[x])
-		reward = str(post.reward)
-		reward = float(reward.replace("SBD", ""))
-		total += reward
-		x+= 1
+def session_post(url, post):
+	headers = {
+		'User-Agent': 'Socko-Bot'
+	}
+	return session.post(url, data = post, headers = headers, timeout = 30)
+
+def fetch_payouts(user):
+	total = 0.0
+	
+	post = '{"id":1,"jsonrpc":"2.0","method":"get_discussions_by_blog","params":[{"tag":"' + user + '","limit":50}]}' # retrieve last 50 blog posts
+	response = session_post('https://api.steemit.com', post)
+	data = json.loads(response.text)
+	
+	if 'result' in data:
+		x = 0
+		while x < len(data['result']):
+			post = data['result'][x]
+			if post['author'] == user:
+				reward = float(post['pending_payout_value'].replace("SBD", "")) # we take 'pending_payout_value' parameter which lasts 7 days
+				total+= reward
+			x+= 1
+	else:
+		raise Exception('User does not exist!')
 
 	return total
 
