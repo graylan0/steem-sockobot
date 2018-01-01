@@ -74,7 +74,10 @@ async def command(msg,command):
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 		total_p = fetch_payouts(user_name)
 		total_payout = await payout(total_p,sbd_usd,ste_usd)
-		await client.send_message(msg.channel, "**@" + str(msg.content[8:]) + "** will receive " + total_payout + "USD") # The print if you just want to run this from your shell.
+		url = requests.get('https://steemitimages.com/u/' + user_name + '/avatar/small', allow_redirects=True).url
+		em = discord.Embed(description='will receive ' + total_payout + 'USD')
+		em.set_author(name='@' + user_name, icon_url=url)
+		await client.send_message(msg.channel, embed=em)
 
 
 	else:
