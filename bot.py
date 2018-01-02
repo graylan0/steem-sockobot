@@ -86,7 +86,7 @@ async def command(msg,command):
 		await client.send_message(msg.channel, embed=em)
 		
 	elif command.lower().startswith('register'):
-		await client.send_message(msg.author, "@" + msg.author.name + ", register sending transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
+		await client.send_message(msg.author, "<@" + msg.author.id + ">, to register send transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
 
 
 	else:
@@ -198,7 +198,7 @@ def is_mod(reaction, user):
 
 async def check_for_payments():
 	await client.wait_until_ready()
-	roles = discord.utils.get(client.get_server(SERVER_ID).roles, name=ROLE_NAME)
+	role = discord.utils.get(client.get_server(SERVER_ID).roles, name=ROLE_NAME)
 	
 	while not client.is_closed:
 		transfers = account.history_reverse(filter_by='transfer')
@@ -220,9 +220,12 @@ async def check_for_payments():
 			if 'STEEM' in t['amount']: # STEEM payment only?
 				payment = float(t['amount'].replace("STEEM", ""))
 				if payment >= minimum_payment:
-					#print('> Give role')
-					members = discord.utils.get(client.get_server(SERVER_ID).members, id=t['memo']) # get members by id
-					await client.add_roles(members, roles) # add roles to members
+					member = discord.utils.get(client.get_server(SERVER_ID).members, id=t['memo']) # get member by id
+					if role in member.roles:
+						continue
+
+					await client.add_roles(member, role) # add role to member
+					await client.send_message(member, "<@" + member.id + ">, You have been successfully registered :)")
 				
 		await asyncio.sleep(60) # check every minute
 
