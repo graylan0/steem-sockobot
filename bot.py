@@ -38,6 +38,8 @@ voting_power = { # Decides how big of an upvote each channel gets.
 # 'channels_id' : 0-100 (% of your vote)
 }
 
+minimum_payment = 1.000 # 1 STEEM
+
 session = requests.Session()
 
 #########################
@@ -78,6 +80,9 @@ async def command(msg,command):
 		em = discord.Embed(description='will receive ' + total_payout + 'USD')
 		em.set_author(name='@' + user_name, icon_url=url)
 		await client.send_message(msg.channel, embed=em)
+		
+	elif command.lower().startswith('register'):
+		await client.send_message(msg.author, "@" + msg.author.name + ", register sending transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
 
 
 	else:
