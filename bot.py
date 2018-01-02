@@ -75,7 +75,7 @@ async def command(msg,command):
 		total_p = fetch_payouts(user_name)
 		total_payout = await payout(total_p,sbd_usd,ste_usd)
 		url = requests.get('https://steemitimages.com/u/' + user_name + '/avatar/small', allow_redirects=True).url
-		em = discord.Embed(description='will receive ' + total_payout + 'USD')
+		em = discord.Embed(description=total_payout + 'USD')
 		em.set_author(name='@' + user_name, icon_url=url)
 		await client.send_message(msg.channel, embed=em)
 
