@@ -78,8 +78,9 @@ async def command(msg,command):
 
 		ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
-		total_p = fetch_payouts(user_name)
-		total_payout = await payout(total_p,sbd_usd,ste_usd)
+		total_p = fetch_payouts_by_blog(user_name)
+		total_c = fetch_payouts_by_comments(user_name)
+		total_payout = await payout(total_p + total_c,sbd_usd,ste_usd)
 		url = requests.get('https://steemitimages.com/u/' + user_name + '/avatar/small', allow_redirects=True).url
 		em = discord.Embed(description=total_payout + 'USD')
 		em.set_author(name='@' + user_name, icon_url=url)
@@ -144,10 +145,30 @@ def session_post(url, post):
 	}
 	return session.post(url, data = post, headers = headers, timeout = 30)
 
-def fetch_payouts(user):
+def fetch_payouts_by_blog(user):
 	total = 0.0
 	
 	post = '{"id":1,"jsonrpc":"2.0","method":"get_discussions_by_blog","params":[{"tag":"' + user + '","limit":50}]}' # retrieve last 50 blog posts
+	response = session_post('https://api.steemit.com', post)
+	data = json.loads(response.text)
+	
+	if 'result' in data:
+		x = 0
+		while x < len(data['result']):
+			post = data['result'][x]
+			if post['author'] == user:
+				reward = float(post['pending_payout_value'].replace("SBD", "")) # we take 'pending_payout_value' parameter which lasts 7 days
+				total+= reward
+			x+= 1
+	else:
+		raise Exception('User does not exist!')
+
+	return total
+
+def fetch_payouts_by_comments(user):
+	total = 0.0
+	
+	post = '{"id":1,"jsonrpc":"2.0","method":"get_discussions_by_comments","params":[{"start_author":"' + user + '","limit": 50}]}' # retrieve last 50 blog posts
 	response = session_post('https://api.steemit.com', post)
 	data = json.loads(response.text)
 	
