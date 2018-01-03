@@ -9,6 +9,7 @@ from coinmarketcap import Market
 from steem import Steem
 from steem.post import Post
 from steem.blog import Blog
+from steem.account import Account
 from discord.ext.commands import Bot
 from discord.ext import commands
 
@@ -17,7 +18,10 @@ client = Bot(description="Socko-Bot", command_prefix='$', pm_help = True)
 
 BOT_USER_NAME =  os.getenv('NAME') # Put your bot's steem username in here.
 BOT_PRIVATE_POSTING_KEY = os.getenv('KEY') # Put your bot's private posting key in here. Don't worry, it's protected by an encrypted wallet (on your first run you will be asked to set the password via shell).
+SERVER_ID = '' # Put Discord server's ID
+ROLE_NAME = '' # Put Discord server's granted role name
 
+account = Account(BOT_USER_NAME)
 s = Steem(keys=[BOT_PRIVATE_POSTING_KEY])
 cmc = Market() # Coinmarketcap API call.
 bot_role = 'sockobot' # Set a role for your bot here. Temporary fix.
@@ -37,6 +41,8 @@ channels_list = [ # Channels that the bot should remove old messages from with d
 voting_power = { # Decides how big of an upvote each channel gets.
 # 'channels_id' : 0-100 (% of your vote)
 }
+
+minimum_payment = 1.000 # 1 STEEM
 
 session = requests.Session()
 
@@ -78,6 +84,9 @@ async def command(msg,command):
 		em = discord.Embed(description=total_payout + 'USD')
 		em.set_author(name='@' + user_name, icon_url=url)
 		await client.send_message(msg.channel, embed=em)
+		
+	elif command.lower().startswith('register'):
+		await client.send_message(msg.author, "<@" + msg.author.id + ">, to register send transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
 
 
 	else:
@@ -187,6 +196,39 @@ def is_mod(reaction, user):
 		else:
 			return False
 
+async def check_for_payments():
+	await client.wait_until_ready()
+	role = discord.utils.get(client.get_server(SERVER_ID).roles, name=ROLE_NAME)
+	
+	while not client.is_closed:
+		transfers = account.history_reverse(filter_by='transfer')
+		now = datetime.datetime.now() - datetime.timedelta(days=7) # check only last 7 days
+		
+		for t in transfers:
+				
+			#print('Received from: ' + t['from'] + ' +' + t['amount'] + '. Memo: ' + t['memo'] + ' at ' + t['timestamp'])
+			
+			if now > datetime.datetime.strptime(t['timestamp'], "%Y-%m-%dT%H:%M:%S"):
+				break
+				
+			if t['from'] == BOT_USER_NAME: # skip mine transactions
+				continue
+			
+			if not t['memo'].isdigit(): # skip invalid MEMO
+				continue
+			
+			if 'STEEM' in t['amount']: # STEEM payment only?
+				payment = float(t['amount'].replace("STEEM", ""))
+				if payment >= minimum_payment:
+					member = discord.utils.get(client.get_server(SERVER_ID).members, id=t['memo']) # get member by id
+					if role in member.roles:
+						continue
+
+					await client.add_roles(member, role) # add role to member
+					await client.send_message(member, "<@" + member.id + ">, You have been successfully registered :)")
+				
+		await asyncio.sleep(60) # check every minute
+
 ######################
 # DEFINE EVENTS HERE #
 ######################
@@ -221,4 +263,5 @@ async def on_reaction_add(reaction, user):
 		botmsg = await client.get_message(reaction.message.channel, react_dict[reaction.message.id])
 		await client.delete_message(botmsg)
 if __name__ == '__main__': # Starting the bot.
+	client.loop.create_task(check_for_payments())
 	client.run(os.getenv('TOKEN'))
