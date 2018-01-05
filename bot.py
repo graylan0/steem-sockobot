@@ -38,6 +38,10 @@ moderating_roles = ['' # A temporary way to handle moderation.
 channels_list = [ # Channels that the bot should remove old messages from with del_old_mess()
 ]
 
+registered_users = {
+	
+}
+
 voting_power = { # Decides how big of an upvote each channel gets.
 # 'channels_id' : 0-100 (% of your vote)
 }
@@ -91,8 +95,9 @@ async def command(msg,command):
 		await client.send_message(msg.channel, embed=em)
 		
 	elif command.lower().startswith('register'):
+		user_name = command.split(' ')[1]
 		await client.send_message(msg.author, "<@" + msg.author.id + ">, to register send transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
-
+		registered_users[user_name] = msg.author.id # Storing registered users in a dictionary for later database functionality.
 
 	else:
 		command_error = await client.send_message(msg.channel, "Wrong command.")
