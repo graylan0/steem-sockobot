@@ -58,7 +58,7 @@ async def command(msg,command):
 		await client.send_message(msg.channel,":ping_pong: Pong!")
 
 	elif command.lower().startswith('price'):
-		coin = command[6:]
+		coin = command.split(' ')[1]
 		btc_usd = cmc.ticker("bitcoin", limit="3", convert="USD")[0].get("price_usd", "none")
 		ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
@@ -73,13 +73,17 @@ async def command(msg,command):
 			await client.send_message(msg.channel, "I only know the price of STEEM, SBD and BTC.")
 
 	elif command.lower().startswith('payout'):
-		user_name = command[7:]
-		total_p = 0.0
+		user_name = command.split(' ')[1]
+
+		try:
+			days = command.split(' ')[2]
+		except IndexError:
+			days = 7
 
 		ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
-		total_p = fetch_payouts_by_blog(user_name)
-		total_c = fetch_payouts_by_comments(user_name)
+		total_p = fetch_payouts_by_blog(user_name, days)
+		total_c = fetch_payouts_by_comments(user_name, days)
 		total_payout = await payout(total_p + total_c,sbd_usd,ste_usd)
 		url = requests.get('https://steemitimages.com/u/' + user_name + '/avatar/small', allow_redirects=True).url
 		em = discord.Embed(description=total_payout + 'USD')
@@ -145,18 +149,17 @@ def session_post(url, post):
 	}
 	return session.post(url, data = post, headers = headers, timeout = 30)
 
-def fetch_payouts_by_blog(user):
+def fetch_payouts_by_blog(user, days):
 	total = 0.0
 	
 	post = '{"id":1,"jsonrpc":"2.0","method":"get_discussions_by_blog","params":[{"tag":"' + user + '","limit":50}]}' # retrieve last 50 blog posts
 	response = session_post('https://api.steemit.com', post)
 	data = json.loads(response.text)
-	
 	if 'result' in data:
 		x = 0
 		while x < len(data['result']):
 			post = data['result'][x]
-			if post['author'] == user:
+			if post['author'] == user and datetime.datetime.strptime(post['created'][:10], "%Y-%m-%d").date() >= datetime.date.today() - datetime.timedelta(days=int(days)):
 				reward = float(post['pending_payout_value'].replace("SBD", "")) # we take 'pending_payout_value' parameter which lasts 7 days
 				total+= reward
 			x+= 1
@@ -165,7 +168,7 @@ def fetch_payouts_by_blog(user):
 
 	return total
 
-def fetch_payouts_by_comments(user):
+def fetch_payouts_by_comments(user, days):
 	total = 0.0
 	
 	post = '{"id":1,"jsonrpc":"2.0","method":"get_discussions_by_comments","params":[{"start_author":"' + user + '","limit": 50}]}' # retrieve last 50 blog posts
@@ -176,7 +179,7 @@ def fetch_payouts_by_comments(user):
 		x = 0
 		while x < len(data['result']):
 			post = data['result'][x]
-			if post['author'] == user:
+			if post['author'] == user and datetime.datetime.strptime(post['created'][:10], "%Y-%m-%d").date() >= datetime.date.today() - datetime.timedelta(days=int(days)):
 				reward = float(post['pending_payout_value'].replace("SBD", "")) # we take 'pending_payout_value' parameter which lasts 7 days
 				total+= reward
 			x+= 1
