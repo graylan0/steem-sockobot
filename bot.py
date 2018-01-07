@@ -21,8 +21,8 @@ BOT_PRIVATE_POSTING_KEY = os.getenv('KEY') # Put your bot's private posting key 
 SERVER_ID = '' # Put Discord server's ID
 ROLE_NAME = '' # Put Discord server's granted role name
 
-account = Account(BOT_USER_NAME, steemd_instance=Steem(nodes=["https://api.steemit.com"]))
 s = Steem(nodes=["https://api.steemit.com"], keys=[BOT_PRIVATE_POSTING_KEY])
+account = Account(BOT_USER_NAME, steemd_instance=s)
 cmc = Market() # Coinmarketcap API call.
 bot_role = 'sockobot' # Set a role for your bot here. Temporary fix.
 all_posts = [] # Need this global var later. Temporary fix.
