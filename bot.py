@@ -22,7 +22,7 @@ SERVER_ID = '' # Put Discord server's ID
 ROLE_NAME = '' # Put Discord server's granted role name
 
 account = Account(BOT_USER_NAME)
-s = Steem(keys=[BOT_PRIVATE_POSTING_KEY])
+s = Steem(nodes=["https://api.steemit.com"], keys=[BOT_PRIVATE_POSTING_KEY])
 cmc = Market() # Coinmarketcap API call.
 bot_role = 'sockobot' # Set a role for your bot here. Temporary fix.
 all_posts = [] # Need this global var later. Temporary fix.
@@ -97,7 +97,6 @@ async def command(msg,command):
 	elif command.lower().startswith('register'):
 		user_name = command.split(' ')[1]
 		await client.send_message(msg.author, "<@" + msg.author.id + ">, to register send transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
-		registered_users[user_name] = msg.author.id # Storing registered users in a dictionary for later database functionality.
 
 	else:
 		command_error = await client.send_message(msg.channel, "Wrong command.")
@@ -253,6 +252,7 @@ async def check_for_payments():
 					if role in member.roles:
 						continue
 
+					registered_users[t['from']] = msg.author.id # Storing registered users in a dictionary for later database functionality.
 					await client.add_roles(member, role) # add role to member
 					await client.send_message(member, "<@" + member.id + ">, You have been successfully registered :)")
 				
