@@ -9,6 +9,7 @@ from coinmarketcap import Market
 from steem import Steem
 from steem.post import Post
 from steem.blog import Blog
+from steem.instance import set_shared_steemd_instance
 from steem.account import Account
 from discord.ext.commands import Bot
 from discord.ext import commands
@@ -22,6 +23,15 @@ SERVER_ID = '' # Put Discord server's ID
 ROLE_NAME = '' # Put Discord server's granted role name
 
 s = Steem(nodes=["https://api.steemit.com", "https://rpc.buildteam.io"], keys=[BOT_PRIVATE_POSTING_KEY])
+steemd_nodes = [
+    'https://api.steemit.com/',
+    'https://gtg.steem.house:8090/',
+    'https://steemd.steemitstage.com/',
+    'https://steemd.steemgigs.org/'
+    'https://steemd.steemit.com/',
+]
+set_shared_steemd_instance(Steemd(nodes=steemd_nodes)) # set backup API nodes
+
 account = Account(BOT_USER_NAME, steemd_instance=s)
 cmc = Market() # Coinmarketcap API call.
 bot_role = 'sockobot' # Set a role for your bot here. Temporary fix.
