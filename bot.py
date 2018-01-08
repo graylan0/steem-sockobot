@@ -11,8 +11,10 @@ from steem.post import Post
 from steem.blog import Blog
 from steem.instance import set_shared_steemd_instance
 from steem.account import Account
+from steem.steemd import Steemd
 from discord.ext.commands import Bot
 from discord.ext import commands
+
 
 # Here you can modify the bot's prefix and description and wether it sends help in direct messages or not. @client.command is strongly discouraged, edit your commands into the command() function instead.
 client = Bot(description="Socko-Bot", command_prefix='$', pm_help = True)
