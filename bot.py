@@ -175,7 +175,7 @@ def fetch_payouts_by_blog(user, days):
 		x = 0
 		while x < len(data['result']):
 			post = data['result'][x]
-			if post['author'] == user and datetime.datetime.strptime(post['created'][:10], "%Y-%m-%d").date() <= datetime.date.today() - datetime.timedelta(days=int(days)):
+			if post['author'] == user and datetime.datetime.strptime(post['created'][:10], "%Y-%m-%d").date() >= datetime.date.today() - (datetime.timedelta(days=7) - datetime.timedelta(days=int(days))):
 				reward = float(post['pending_payout_value'].replace("SBD", "")) # we take 'pending_payout_value' parameter which lasts 7 days
 				total+= reward
 			x+= 1
