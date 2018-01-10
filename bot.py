@@ -106,6 +106,18 @@ async def command(msg,command):
 		em.set_author(name='@' + user_name, icon_url=url)
 		await client.send_message(msg.channel, embed=em)
 		
+	elif command.lower().startswith('vote'):
+		user_name = command.split(' ')[1]
+		
+		voting_power = round(float(Account(user_name)['voting_power'] / 100), 2)
+		estimated_upvote = round(calculate_estimated_upvote(user_name), 2)
+		estimated_upvote_now = round(estimated_upvote * voting_power / 100, 2)
+		
+		url = requests.get('https://steemitimages.com/u/' + user_name + '/avatar/small', allow_redirects=True).url
+		em = discord.Embed(description='Voting power: ' + str(voting_power) + '%\nEstimated 100% powered upvote: $' + str(estimated_upvote) + ', currently: $' + str(estimated_upvote_now))
+		em.set_author(name='@' + user_name, icon_url=url)
+		await client.send_message(msg.channel, embed=em)
+		
 	elif command.lower().startswith('register'):
 		user_name = command.split(' ')[1]
 		await client.send_message(msg.author, "<@" + msg.author.id + ">, to register send transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
@@ -203,6 +215,33 @@ def fetch_payouts_by_comments(user, days):
 		raise Exception('User does not exist!')
 
 	return total
+			
+def calculate_estimated_upvote(user_name):
+	account = Account(user_name)
+	reward_fund = s.get_reward_fund()
+	sbd_median_price = get_current_median_history_price()
+	
+	vests = float(account['vesting_shares'].replace('VESTS', '')) + float(account['received_vesting_shares'].replace('VESTS', ''))
+	vestingShares = int(vests * 1e6);
+	power = account['voting_power'] / 50
+	rshares = power * vestingShares / 10000
+	estimated_upvote = rshares / float(reward_fund['recent_claims']) * float(reward_fund['reward_balance'].replace('STEEM', '')) * sbd_median_price
+	
+	return estimated_upvote
+			
+def get_current_median_history_price():
+	price = 0.0
+
+	data = '{"id":1,"jsonrpc":"2.0","method":"get_current_median_history_price"}'
+	response = session_post('https://api.steemit.com', data)
+	data = json.loads(response.text)
+	
+	if 'result' in data:
+		price = float(data['result']['base'].replace('SBD', ''))		
+	else:
+		raise Exception('Couldnt get the SBD price!')
+	
+	return price
 
 # Calculates the potential payout of all posts on the blog.
 async def payout(total,sbd,ste):
