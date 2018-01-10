@@ -223,7 +223,7 @@ def calculate_estimated_upvote(user_name):
 	
 	vests = float(account['vesting_shares'].replace('VESTS', '')) + float(account['received_vesting_shares'].replace('VESTS', ''))
 	vestingShares = int(vests * 1e6);
-	power = account['voting_power'] / 50
+	power = 10000 / 50
 	rshares = power * vestingShares / 10000
 	estimated_upvote = rshares / float(reward_fund['recent_claims']) * float(reward_fund['reward_balance'].replace('STEEM', '')) * sbd_median_price
 	
