@@ -24,7 +24,6 @@ BOT_PRIVATE_POSTING_KEY = os.getenv('KEY') # Put your bot's private posting key 
 SERVER_ID = '' # Put Discord server's ID
 ROLE_NAME = '' # Put Discord server's granted role name
 
-s = Steem(nodes=steemd_nodes, keys=[BOT_PRIVATE_POSTING_KEY])
 steemd_nodes = [
     'https://api.steemit.com/',
     'https://gtg.steem.house:8090/',
@@ -32,6 +31,7 @@ steemd_nodes = [
     'https://steemd.steemgigs.org/'
     'https://steemd.steemit.com/',
 ]
+s = Steem(nodes=steemd_nodes, keys=[BOT_PRIVATE_POSTING_KEY])
 set_shared_steemd_instance(Steemd(nodes=steemd_nodes)) # set backup API nodes
 
 account = Account(BOT_USER_NAME, steemd_instance=s)
@@ -109,7 +109,7 @@ async def command(msg,command):
 	elif command.lower().startswith('vote'):
 		user_name = command.split(' ')[1]
 		account = Account(BOT_USER_NAME, steemd_instance=s)
-		
+
 		voting_power = round(float(Account(user_name)['voting_power'] / 100), 2)
 		estimated_upvote = round(calculate_estimated_upvote(user_name), 2)
 		estimated_upvote_now = round(estimated_upvote * voting_power / 100, 2)
