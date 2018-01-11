@@ -25,7 +25,7 @@ SERVER_ID = '' # Put Discord server's ID
 ROLE_NAME = '' # Put Discord server's granted role name
 
 steemd_nodes = [
-    #'https://api.steemit.com/',
+    'https://api.steemit.com/',
     'https://gtg.steem.house:8090/',
     'https://steemd.steemitstage.com/',
     'https://steemd.steemgigs.org/'
