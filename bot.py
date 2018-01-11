@@ -25,7 +25,7 @@ SERVER_ID = '' # Put Discord server's ID
 ROLE_NAME = '' # Put Discord server's granted role name
 
 steemd_nodes = [
-    'https://api.steemit.com/',
+    #'https://api.steemit.com/',
     'https://gtg.steem.house:8090/',
     'https://steemd.steemitstage.com/',
     'https://steemd.steemgigs.org/'
@@ -33,8 +33,8 @@ steemd_nodes = [
 ]
 s = Steem(nodes=steemd_nodes, keys=[BOT_PRIVATE_POSTING_KEY])
 set_shared_steemd_instance(Steemd(nodes=steemd_nodes)) # set backup API nodes
-
 account = Account(BOT_USER_NAME, steemd_instance=s)
+
 cmc = Market() # Coinmarketcap API call.
 bot_role = 'sockobot' # Set a role for your bot here. Temporary fix.
 all_posts = [] # Need this global var later. Temporary fix.
