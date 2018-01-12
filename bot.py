@@ -5,6 +5,7 @@ import datetime
 import os
 import json
 import requests
+import random
 from coinmarketcap import Market
 from steem import Steem
 from steem.post import Post
@@ -43,6 +44,7 @@ react_dict = {}
 ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
 sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 btc_usd = cmc.ticker("bitcoin", limit="3", convert="USD")[0].get("price_usd", "none")
+eth_usd = cmc.ticker("ethereum", limit="3", convert="USD")[0].get("price_usd", "none")
 
 moderating_roles = ['' # A temporary way to handle moderation.
 ]
@@ -85,6 +87,8 @@ async def command(msg,command):
 			await client.send_message(msg.channel, "Current price of **Steem Dollar (SBD):** " + sbd_usd + " USD")
 		elif coin.lower() == 'btc' or coin.lower() == "bitcoin":
 			await client.send_message(msg.channel, "Current price of **Bitcoin (BTC):** " + btc_usd + " USD")
+		elif coin.lower() == 'eth' or coin.lower() == "ethereum":
+			await client.send_message(msg.channel, "Current price of **Ethereum (ETH):** " + eth_usd + " USD")	
 		else:
 			await client.send_message(msg.channel, "I only know the price of STEEM, SBD and BTC.")
 
@@ -100,7 +104,7 @@ async def command(msg,command):
 		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 		total_p = fetch_payouts_by_blog(user_name, days)
 		total_c = fetch_payouts_by_comments(user_name, days)
-		total_payout = await payout(total_p + total_c,sbd_usd,ste_usd)
+		total_payout = await payout(total_p + total_c,sbd_usd)
 		url = requests.get('https://steemitimages.com/u/' + user_name + '/avatar/small', allow_redirects=True).url
 		em = discord.Embed(description=total_payout + 'USD')
 		em.set_author(name='@' + user_name, icon_url=url)
@@ -122,6 +126,9 @@ async def command(msg,command):
 	elif command.lower().startswith('register'):
 		user_name = command.split(' ')[1]
 		await client.send_message(msg.author, "<@" + msg.author.id + ">, to register send transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
+
+	elif command.lower().startswith('dice'):
+		await client.send_message(msg.author, "<@" + msg.author.id + ">, to gamble send transaction for between 1 and 5 STEEM to @" + BOT_USER_NAME + " with memo: 'dice'")
 
 	else:
 		command_error = await client.send_message(msg.channel, "Wrong command.")
@@ -145,7 +152,7 @@ async def get_info(msg):
 	embed.add_field(name="Nominator", value=str('<@'+ msg.author.id +'>'), inline=True)
 	embed.add_field(name="Age", value=str(p.time_elapsed())[:-10] +" hours", inline=False)
 	embed.add_field(name="Payout", value=str(p.reward), inline=True)
-	embed.add_field(name="Payout in USD", value=await payout(p.reward,sbd_usd,ste_usd), inline=True)
+	embed.add_field(name="Payout in USD", value=await payout(p.reward,sbd_usd), inline=True)
 	embed.set_footer(text="SockoBot - a Steem bot by Vctr#5566 (@jestemkioskiem)")
 	return embed
 
@@ -224,8 +231,7 @@ def calculate_estimated_upvote(user_name):
 	
 	vests = float(account['vesting_shares'].replace('VESTS', '')) + float(account['received_vesting_shares'].replace('VESTS', ''))
 	vestingShares = int(vests * 1e6);
-	power = 10000 / 50
-	rshares = power * vestingShares / 10000
+	rshares = 200 * vestingShares / 10000
 	estimated_upvote = rshares / float(reward_fund['recent_claims']) * float(reward_fund['reward_balance'].replace('STEEM', '')) * sbd_median_price
 	
 	return estimated_upvote
@@ -245,11 +251,10 @@ def get_current_median_history_price():
 	return price
 
 # Calculates the potential payout of all posts on the blog.
-async def payout(total,sbd,ste):
+async def payout(total,sbd):
 	total = float(total) * 0.8 # Currator cut, anywhere between 0.85 and 0.75.
 	totalsbd = str(total * 0.5 * float(sbd))[:6]
-	totalsp = total * 0.5 * float(ste)
-	totalsp = str(totalsp * 1/float(ste))[:6] # SBD is always worth 1$ in the steem blockchain, so price of SBD to price of STE is always 1/STE.
+	totalsp = str(total * 0.5)[:6]
 	payout = str(float(totalsbd) + float(totalsp))[:6]
 	return payout
 # Deletes posts in channel_list channels older than given hours.
@@ -299,16 +304,38 @@ async def check_for_payments():
 			
 			if 'STEEM' in t['amount']: # STEEM payment only?
 				payment = float(t['amount'].replace("STEEM", ""))
-				if payment >= minimum_payment:
-					member = discord.utils.get(client.get_server(SERVER_ID).members, id=t['memo']) # get member by id
-					if role in member.roles:
-						continue
+				if payment >= minimum_payment and payment <= 5
+					if t['memo'].startswith("r"):
+						
+						register(t['memo'][1:])
+						registered_users[t['from']] = t['memo'][1:] # Storing registered users in a dictionary for later database functionality.
+					
+					elif t['memo'].lower().startswith("dice"):
+						winnings = payment*1.95
+						result = gamble()
+						if result > 50:
+							transfer(t['from'],,STEEM,memo="You won " + winnings " STEEM with a roll of " + result "!",account=BOT_USER_NAME)
+							await client.send_message(member, "<@" + member.id + ">, you won " + winnings " STEEM with a roll of " + result "!")
+						if result <= 50:
+							await client.send_message(member, "<@" + member.id + ">, you lost " + payment " STEEM with a roll of " + result " :(")
 
-					registered_users[t['from']] = msg.author.id # Storing registered users in a dictionary for later database functionality.
-					await client.add_roles(member, role) # add role to member
-					await client.send_message(member, "<@" + member.id + ">, You have been successfully registered :)")
+
+						
 				
 		await asyncio.sleep(60) # check every minute
+
+async def register(id, role_name):
+	role = discord.utils.get(client.get_server(SERVER_ID).roles, name=role_name)
+	member = discord.utils.get(client.get_server(SERVER_ID).members, id=id) # get member by id
+	if role in member.roles:
+		continue
+
+	await client.add_roles(member, role) # add role to member
+	await client.send_message(member, "<@" + member.id + ">, You have been successfully registered :)")
+
+async def gamble():
+	result = randint(0,100)
+	return result
 
 ######################
 # DEFINE EVENTS HERE #
@@ -328,6 +355,7 @@ async def on_message(message):
 	ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
 	sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
 	btc_usd = cmc.ticker("bitcoin", limit="3", convert="USD")[0].get("price_usd", "none")
+	eth_usd = cmc.ticker("ethereum", limit="3", convert="USD")[0].get("price_usd", "none")
 	
 	await del_old_mess(72)
 	if message.content.startswith('https'):
