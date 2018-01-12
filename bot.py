@@ -313,7 +313,7 @@ async def check_for_payments():
 						winnings = payment*1.95
 						result = gamble()
 						if result > 50:
-							transfer(t['from'],,STEEM,memo="You won " + winnings " STEEM with a roll of " + result "!",account=BOT_USER_NAME)
+							transfer(t['from'],STEEM,memo="You won " + winnings " STEEM with a roll of " + result "!",account=BOT_USER_NAME)
 							await client.send_message(member, "<@" + member.id + ">, you won " + winnings " STEEM with a roll of " + result "!")
 						if result <= 50:
 							await client.send_message(member, "<@" + member.id + ">, you lost " + payment " STEEM with a roll of " + result " :(")
