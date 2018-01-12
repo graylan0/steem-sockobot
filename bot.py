@@ -303,7 +303,7 @@ async def check_for_payments():
 			
 			if 'STEEM' in t['amount']: # STEEM payment only?
 				payment = float(t['amount'].replace("STEEM", ""))
-				if payment >= minimum_payment and payment <= 5
+				if payment >= minimum_payment and payment <= 5:
 					if t['memo'].startswith("r"):
 						
 						register(t['memo'][1:])
