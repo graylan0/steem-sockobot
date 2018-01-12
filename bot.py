@@ -124,7 +124,6 @@ async def command(msg,command):
 		await client.send_message(msg.channel, embed=em)
 		
 	elif command.lower().startswith('register'):
-		user_name = command.split(' ')[1]
 		await client.send_message(msg.author, "<@" + msg.author.id + ">, to register send transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
 
 	elif command.lower().startswith('dice'):
