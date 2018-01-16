@@ -15,7 +15,7 @@ The monitor.sh file is currently used to safely deploy the bot to a cloud server
 Shows the current price of one of these coins (via coinmarketcap). This can easily be expanded to any coin supported by coinmarketcap.
 ![price.png](https://i.imgur.com/IVmgejL.png)
 
-### **$payout \<NICKNAME> <DAYS>** 
+### **$payout \<NICKNAME> \<DAYS>** 
 Shows the potential payout of given user's posts that have yet to pay out. The days argument is used to define a time period (up to 7 days) in which the payouts should be counted. The payout's value is counted based on coinmarketcap's prices.
 ![payout.png](https://i.imgur.com/ILoilD8.png)
 
