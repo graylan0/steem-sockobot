@@ -35,8 +35,10 @@ Checks if the bot is responsive.
 ![stats.png](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1514307010/gq6pewla6ild673qpddn.png)
 
 ### Remove old posts from allowed channels.
+You can alter the age/channels in the code.
 
 ### Check if the author of a message/reaction has moderating privilages.
+For that, use the **is_mod()** function.
 
 ## Known bugs:
 * 
