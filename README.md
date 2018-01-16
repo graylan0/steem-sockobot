@@ -30,12 +30,13 @@ Checks if the bot is responsive.
 
 ## Other functionality:
 
-* Upvote steem posts using a provided **private active key** when a moderator uses a ☑ (default) on a steem post link.
+### Upvote steem posts...
+...using a provided **private active key** when a moderator uses a ☑ (default) on a steem post link.
 ![stats.png](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1514307010/gq6pewla6ild673qpddn.png)
 
-* Remove old posts from allowed channels.
+### Remove old posts from allowed channels.
 
-* Check if the author of a message/reaction has moderating privilages.
+### Check if the author of a message/reaction has moderating privilages.
 
 ## Known bugs:
 * 
