@@ -40,10 +40,6 @@ bot_role = 'sockobot' # Set a role for your bot here. Temporary fix.
 all_posts = [] # Need this global var later. Temporary fix.
 react_dict = {}
 
-ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
-sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
-btc_usd = cmc.ticker("bitcoin", limit="3", convert="USD")[0].get("price_usd", "none")
-
 moderating_roles = ['' # A temporary way to handle moderation.
 ]
 
@@ -67,32 +63,116 @@ session = requests.Session()
 #########################
 
  # Used to run any commands. Add your custom commands here, each under a new elif command.startswith(name):.
-async def command(msg,command):
-	command = str(command)
-	command = command[1:]
-	if command.lower().startswith('ping'):
+async def command(msg,text):
+
+	text = str(text)
+	text = text[1:]
+	if text.lower().startswith('ping'):
 		await client.send_message(msg.channel,":ping_pong: Pong!")
 
-	elif command.lower().startswith('price'):
-		coin = command.split(' ')[1]
-		btc_usd = cmc.ticker("bitcoin", limit="3", convert="USD")[0].get("price_usd", "none")
-		ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
-		sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
-
-		if coin.lower() == 'ste' or coin.lower() == "steem":
-			await client.send_message(msg.channel, "Current price of **STEEM (STE):** " + ste_usd + " USD")
-		elif coin.lower() == 'sbd':
-			await client.send_message(msg.channel, "Current price of **Steem Dollar (SBD):** " + sbd_usd + " USD")
-		elif coin.lower() == 'btc' or coin.lower() == "bitcoin":
-			await client.send_message(msg.channel, "Current price of **Bitcoin (BTC):** " + btc_usd + " USD")
-		else:
-			await client.send_message(msg.channel, "I only know the price of STEEM, SBD and BTC.")
-
-	elif command.lower().startswith('payout'):
-		user_name = command.split(' ')[1]
+	elif text.lower().startswith('convert'):
+		try:
+			value = text.split(' ')[1]
+			coin1 = text.split(' ')[2].lower()
+			coin2 = text.split(' ')[3].lower()
+		except IndexError:
+			await client.send_message(msg.channel, str("Too few arguments provided"))
+			return None
 
 		try:
-			days = command.split(' ')[2]
+			price1 = cmc.ticker(coin1, limit="3", convert="USD")[0].get("price_usd", "none")
+			price2 = cmc.ticker(coin2, limit="3", convert="USD")[0].get("price_usd", "none")
+		except Exception:
+			await client.send_message(msg.channel, str("You need to provide the full name of the coin (as per coinmarketcap)."))
+		
+		conv_rate = float(price1)/float(price2)
+		outcome = float(value) * conv_rate
+
+		await client.send_message(msg.channel, str("You can receive " + str(outcome) + " **" + coin2 + "** for " + str(value) + " **" + coin1 + "**." ))
+
+	elif text.lower().startswith('wallet'):
+		try:
+			user_name = text.split(' ')[1]
+		except IndexError:
+			await client.send_message(msg.channel, str("Too few arguments provided"))
+			return 0
+		
+		acc = Account(user_name, steemd_instance=s)
+		url = requests.get('https://steemitimages.com/u/' + user_name + '/avatar/small', allow_redirects=True).url
+
+		vests = float(acc['vesting_shares'].replace('VESTS', ''))
+		sp = calculate_steem_power(vests)
+		rec_vests = float(acc['received_vesting_shares'].replace('VESTS', ''))
+		rec_sp = calculate_steem_power(rec_vests)
+		del_vests = float(acc['delegated_vesting_shares'].replace('VESTS', ''))
+		del_sp = calculate_steem_power(del_vests)
+		sp_diff = round(rec_sp - del_sp, 2)
+		voting_power = round(float(Account(user_name)['voting_power'] / 100), 2)
+		estimated_upvote = round(calculate_estimated_upvote(user_name), 2)
+
+		embed=discord.Embed(color=0xe3b13c)
+		embed.set_author(name='@' + user_name, icon_url=url)
+		embed.add_field(name="Steem", value=str(str(acc['balance'].replace('STEEM', ''))), inline=True)
+		embed.add_field(name="Steem Dollars", value=str(acc['sbd_balance'].replace('SBD', '')), inline=True)
+		if sp_diff >= 0:
+			embed.add_field(name="Steem Power", value=str(sp) + " ( +" + str(sp_diff) + ")", inline=True)
+		else:
+			embed.add_field(name="Steem Power", value=str(sp) + " ( " + str(sp_diff) + ")", inline=True)
+		embed.add_field(name="Estimated Account Value", value=str(calculate_estimated_acc_value(user_name)), inline=True)
+		embed.add_field(name="Estimated Vote Value", value=str(estimated_upvote) + " $", inline=True)
+		embed.set_footer(text="SockoBot - a Steem bot by Vctr#5566 (@jestemkioskiem)")
+
+		await client.send_message(msg.channel, embed=embed)		
+
+	elif text.lower().startswith('sp'):
+		try:
+			user_name = text.split(' ')[1]
+		except IndexError:
+			await client.send_message(msg.channel, str("Too few arguments provided"))
+			return 0
+
+		acc = Account(user_name, steemd_instance=s)
+		url = requests.get('https://steemitimages.com/u/' + user_name + '/avatar/small', allow_redirects=True).url
+		
+		vests = float(acc['vesting_shares'].replace('VESTS', ''))
+		sp = calculate_steem_power(vests)
+		rec_vests = float(acc['received_vesting_shares'].replace('VESTS', ''))
+		rec_sp = calculate_steem_power(rec_vests)
+		del_vests = float(acc['delegated_vesting_shares'].replace('VESTS', ''))
+		del_sp = calculate_steem_power(del_vests)
+		sp_diff = round(rec_sp - del_sp, 2)
+
+		embed=discord.Embed(color=0xe3b13c)
+		embed.set_author(name='@' + user_name, icon_url=url)
+		embed.add_field(name="Steem Power", value=str(sp), inline=True)
+		if sp_diff >= 0:
+			embed.add_field(name="Delegations", value="+" + str(sp_diff), inline=True)
+		else:
+			embed.add_field(name="Delegations", value=str(sp_diff), inline=True)
+
+		await client.send_message(msg.channel, embed=embed)	
+
+	elif text.lower().startswith('price'):
+		try:
+			coin = text.split(' ')[1].lower()
+		except IndexError:
+			return str("Too few arguments provided")
+		
+		try: 
+			value = cmc.ticker(coin, limit="3", convert="USD")[0].get("price_usd", "none")
+			await client.send_message(msg.channel, str("The current price of **"+ coin +"** is: *" + str(value) + "* USD."))
+		except Exception:
+			await client.send_message(msg.channel, str("You need to provide the full name of the coin (as per coinmarketcap)."))		 
+
+	elif text.lower().startswith('payout'):
+		try:
+			user_name = text.split(' ')[1]
+		except IndexError:
+			await client.send_message(msg.channel, str("Too few arguments provided"))
+			return 0
+
+		try:
+			days = text.split(' ')[2]
 		except IndexError:
 			days = 7
 
@@ -106,8 +186,12 @@ async def command(msg,command):
 		em.set_author(name='@' + user_name, icon_url=url)
 		await client.send_message(msg.channel, embed=em)
 		
-	elif command.lower().startswith('vote'):
-		user_name = command.split(' ')[1]
+	elif text.lower().startswith('vote'):
+		try:
+			user_name = text.split(' ')[1]
+		except IndexError:
+			await client.send_message(msg.channel, str("Too few arguments provided"))
+			return 0
 		
 		voting_power = round(float(Account(user_name)['voting_power'] / 100), 2)
 		estimated_upvote = round(calculate_estimated_upvote(user_name), 2)
@@ -118,8 +202,12 @@ async def command(msg,command):
 		em.set_author(name='@' + user_name, icon_url=url)
 		await client.send_message(msg.channel, embed=em)
 		
-	elif command.lower().startswith('register'):
-		user_name = command.split(' ')[1]
+	elif text.lower().startswith('register'):
+		try:
+			user_name = text.split(' ')[1]
+		except IndexError:
+			await client.send_message(msg.channel, str("Too few arguments provided"))
+			return 0
 		await client.send_message(msg.author, "<@" + msg.author.id + ">, to register send transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
 
 	else:
@@ -215,7 +303,33 @@ def fetch_payouts_by_comments(user, days):
 		raise Exception('User does not exist!')
 
 	return total
-			
+
+def calculate_steem_power(vests):
+
+	post = '{"id":1,"jsonrpc":"2.0","method":"get_dynamic_global_properties", "params": []}'
+	response = session_post('https://api.steemit.com', post)
+	data = json.loads(response.text)
+	data = data['result']
+
+	total_vesting_fund_steem = float(data['total_vesting_fund_steem'].replace('STEEM', ''))
+	total_vesting_shares = float(data['total_vesting_shares'].replace('VESTS', ''))
+
+	return round(total_vesting_fund_steem * (float(vests)/total_vesting_shares), 2)
+	
+def calculate_estimated_acc_value(user_name):
+	steem_price = float(cmc.ticker('steem', limit="3", convert="USD")[0].get("price_usd", "none"))
+	sbd_price = float(cmc.ticker('steem-dollars', limit="3", convert="USD")[0].get("price_usd", "none"))
+
+	acc = Account(user_name, steemd_instance=s)
+	vests = float(acc['vesting_shares'].replace('VESTS', ''))
+	sp = calculate_steem_power(vests)
+	steem_balance = float(acc['balance'].replace('STEEM', ''))
+	sbd_balance = float(acc['sbd_balance'].replace('SBD', ''))
+	outcome = round(((sp + steem_balance) * steem_price ) + (sbd_balance * sbd_price), 2)
+
+	return str(outcome) + " USD"
+
+
 def calculate_estimated_upvote(user_name):
 	account = Account(user_name)
 	reward_fund = s.get_reward_fund()
@@ -223,8 +337,7 @@ def calculate_estimated_upvote(user_name):
 	
 	vests = float(account['vesting_shares'].replace('VESTS', '')) + float(account['received_vesting_shares'].replace('VESTS', '')) - float(account['delegated_vesting_shares'].replace('VESTS', ''))
 	vestingShares = int(vests * 1e6);
-	power = 10000 / 50
-	rshares = power * vestingShares / 10000
+	rshares = vestingShares * 0.02
 	estimated_upvote = rshares / float(reward_fund['recent_claims']) * float(reward_fund['reward_balance'].replace('STEEM', '')) * sbd_median_price
 	
 	return estimated_upvote
@@ -324,9 +437,6 @@ async def on_ready():
 # This is our event check. For simplicity's sake, everything happens here. You may add your own events, but commands are discouraged, for that, edit the command() function instead.
 @client.event
 async def on_message(message):
-	ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
-	sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
-	btc_usd = cmc.ticker("bitcoin", limit="3", convert="USD")[0].get("price_usd", "none")
 	
 	await del_old_mess(72)
 	if message.content.startswith('https'):
@@ -344,4 +454,5 @@ async def on_reaction_add(reaction, user):
 		await client.delete_message(botmsg)
 if __name__ == '__main__': # Starting the bot.
 	client.loop.create_task(check_for_payments())
+
 client.run(os.getenv('TOKEN'))
