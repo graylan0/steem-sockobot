@@ -70,6 +70,17 @@ async def command(msg,text):
 	if text.lower().startswith('ping'):
 		await client.send_message(msg.channel,":ping_pong: Pong!")
 
+	elif text.lower().startswith('delegate'):
+		try:
+			user_name = text.split(' ')[1].lower()
+			value = float(text.split(' ')[2])
+			target_user_name = text.split(' ')[3].lower()
+		except IndexError:
+			await client.send_message(msg.channel, str("Too few arguments provided"))
+			return None
+
+		await client.send_message(msg.channel, 'To delegate using **SteemConnect**, click the link below: \n %s' % (delegate(value, user_name, target_user_name)))
+
 	elif text.lower().startswith('convert'):
 		try:
 			value = text.split(' ')[1]
@@ -88,7 +99,7 @@ async def command(msg,text):
 		conv_rate = float(price1)/float(price2)
 		outcome = float(value) * conv_rate
 
-		await client.send_message(msg.channel, str("You can receive " + str(outcome) + " **" + coin2 + "** for " + str(value) + " **" + coin1 + "**." ))
+		await client.send_message(msg.channel, str("You can receive %s **%s** for %s **%s**." % (outcome, coin2, value, coin1) ))
 
 	elif text.lower().startswith('wallet'):
 		try:
@@ -160,7 +171,7 @@ async def command(msg,text):
 		
 		try: 
 			value = cmc.ticker(coin, limit="3", convert="USD")[0].get("price_usd", "none")
-			await client.send_message(msg.channel, str("The current price of **"+ coin +"** is: *" + str(value) + "* USD."))
+			await client.send_message(msg.channel, str("The current price of **%s** is: *%s* USD." % (coin, value)))
 		except Exception:
 			await client.send_message(msg.channel, str("You need to provide the full name of the coin (as per coinmarketcap)."))		 
 
@@ -356,6 +367,10 @@ def get_current_median_history_price():
 	
 	return price
 
+def delegate(sp, user_name, target_user_name):
+	link = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=%s&delegatee=%s&vesting_shares=%s' % (user_name, target_user_name, round(sp, 3))
+	return link + '%20SP'
+
 # Calculates the potential payout of all posts on the blog.
 async def payout(total,sbd,ste):
 	total = float(total) * 0.8 # Currator cut, anywhere between 0.85 and 0.75.
@@ -439,7 +454,7 @@ async def on_ready():
 async def on_message(message):
 	
 	await del_old_mess(72)
-	if message.content.startswith('https'):
+	if message.content.startswith('https//steemit') or message.content.startswith('https//busy') or message.content.startswith('https//utopian'):
 		embed = await get_info(message)
 		botmsg = await client.send_message(message.channel, embed=embed)
 		react_dict[message.id] = botmsg.id
