@@ -5,9 +5,7 @@ SockoBot aims to be the most open-source friendly steem related Discord bot out 
 
 ## Usage:
 
-```TOKEN=<BOT TOKEN> KEY=<PRIVATE POSTING KEY> NAME=<STEEM USERNAME> python3 bot.py``` to run SockoBot
-
-The monitor.sh file is currently used to safely deploy the bot to a cloud server without keeping private tokens and keys in the code. It will most likely be removed upon launch, as every developer has his way of handling this. This file is also present for crash-control. If the bot crashes, for any reason, it will reboot immediately. To use that, you need to run monitor.sh with the TOKEN, KEY and NAME values as arguments in that order.
+To find out how to add SockoBot to your own Discord server go [here](https://github.com/amosbastian/steem-sockobot/wiki) and follow the tutorial.
 
 ## Commands:
 
