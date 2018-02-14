@@ -14,27 +14,54 @@ The monitor.sh file is currently used to safely deploy the bot to a cloud server
 #### $convert `<value>` `<coin1>` `<coin2>`
 Convert the value of a given coin to its equal value in another coin.
 
+Example usage:
+
+    $convert 1000 steem-dollars bitcoin
+    
+    You can receive 0.5727615537891285 **bitcoin** for 1000 **steem-dollars**.
+
 #### $delegate `<delegator>` `<value>` `<recipient>`
 Delegate SP to another Steemit account.
 
 #### $payout `<username>` `<days>` 
 Shows the potential payout of a given user's posts that have yet to pay out. The days argument is used to define a time period (up to 7 days) in which the payouts should be counted. The payout's value is counted based on coinmarketcap's prices.
-![payout.png](https://i.imgur.com/ILoilD8.png)
+
+Example usage:
+
+    $payout jestemkioskiem 5
+    
+    19.371USD
 
 #### $ping 
 Pings the bot to see if it is responsive.
 ![ping.png](https://i.imgur.com/6kWkzjO.png)
 
-#### $price `<SBD/STE/BTC>`
-Shows the current price of one of these coins (via coinmarketcap).
-![price.png](https://i.imgur.com/IVmgejL.png)
+#### $price `<coin>`
+Shows the current price of one of the given coin. The name of the coin must be the same as on https://coinmarketcap.com/.
+
+Example usage:
+
+    $price steem-dollars
+    
+    The current price of steem-dollars is: 5.35649 USD.
 
 #### $register `<username>`
-Gives user a memo with which, by sending a set ammount of STEEM/SBD, the user will be able to gain a role on the discord server. 
-![register.png](https://i.imgur.com/PiHwYBp.png)
+Gives user a memo with which, by sending a set amount of STEEM/SBD, the user will be able to gain a role on the discord server. 
+
+Example usage:
+
+    $register jestemkioskiem
+
+    @Jestemkioskiem, to register send transaction for 1.0 STEEM to @jestemkioskiem with memo: 227857056542097408
 
 #### $sp `<username>`
-Shows the current STEEM POWER, incoming delegations and outgoing delegations of the user.
+Shows the current STEEM POWER and delegations of the user.
+
+Example usage:
+
+    $sp jestemkioskiem
+    
+    https://i.imgur.com/QnbHjgW.png
 
 #### $vote `<username>`
 Shows the user's estimated worth of an upvote at 100% voting power and current voting power.
