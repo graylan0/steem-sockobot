@@ -41,7 +41,7 @@ Example usage:
 $payout jestemkioskiem 7
 ``` 
 
-https://i.imgur.com/yhshKbe.png
+![](https://i.imgur.com/yhshKbe.png)
 
 #### $ping 
 Pings the bot to see if it is responsive.
@@ -67,7 +67,7 @@ Example usage:
 $register jestemkioskiem
 ```
 
-https://camo.githubusercontent.com/1d2f42f41dc0952608ab30a096ecc9313017fe1f/68747470733a2f2f692e696d6775722e636f6d2f506948775942702e706e67
+![](https://camo.githubusercontent.com/1d2f42f41dc0952608ab30a096ecc9313017fe1f/68747470733a2f2f692e696d6775722e636f6d2f506948775942702e706e67)
 
 #### $sp `<username>`
 Shows the current STEEM POWER and delegations of the user.
@@ -78,7 +78,7 @@ Example usage:
 $sp jestemkioskiem
 ```
 
-https://i.imgur.com/QnbHjgW.png
+![](https://i.imgur.com/QnbHjgW.png)
 
 #### $vote `<username>`
 Shows the user's estimated worth of an upvote at 100% voting power and current voting power.
@@ -89,7 +89,7 @@ Example usage:
 $vote jestemkioskiem
 ```
 
-https://i.imgur.com/VXfD5EE.png
+![](https://i.imgur.com/VXfD5EE.png)
 
 #### $wallet `<username>`
 Shows the user's current STEEM, STEEM POWER, STEEM DOLLARS, estimated account value and estimated worth of a 100% VP upvote.
@@ -100,7 +100,7 @@ Example usage:
 $wallet jestemkioskiem
 ```
 
-https://i.imgur.com/ck7gwbS.png
+![](https://i.imgur.com/ck7gwbS.png)
 
 ## Other functionality:
 
