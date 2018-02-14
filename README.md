@@ -1,7 +1,7 @@
 # steem-sockobot
-A steem bot for discord servers. Handles basic functionality and allows for easy addition of commands.
+A Steem bot for discord servers. Handles basic functionality and allows for easy addition of commands.
 
-SockoBot aims to be the most open-source friendly steem related Discord bot out there. By introducing a wide variety of commands and letting the owner easily remove them and/or add new functionality, the bot can easily be adapted to work in any Steem Community discord server. The bot is written in a beginner friendly way - the commands are all stored under a single function and so is most of the funcionality, for simplicity's sake, not even classes are present so **anyone** with basic Python knowledge can easily add extra functionality with the help of [steem-python's](http://steem.readthedocs.io/en/latest/index.html) and [discord.py's](https://discordpy.readthedocs.io/en/latest/) respective documentation.
+SockoBot aims to be the most open-source friendly steem related Discord bot out there. By introducing a wide variety of commands and letting the owner easily remove them and/or add new functionality, the bot can easily be adapted to work in any Steem community Discord server. The bot is written in a beginner friendly way - the commands are all stored under a single function and so is most of the funcionality, for simplicity's sake, not even classes are present so **anyone** with basic Python knowledge can easily add extra functionality with the help of [steem-python's](http://steem.readthedocs.io/en/latest/index.html) and [discord.py's](https://discordpy.readthedocs.io/en/latest/) documentation respectively.
 
 ## Usage:
 
@@ -44,14 +44,14 @@ Shows the user's current STEEM, STEEM POWER, STEEM DOLLARS, estimated account va
 
 ## Other functionality:
 
-#### Upvote steem posts...
-...using a provided **private active key** when a moderator uses a ☑ (default) on a steem post link.
+#### Upvote steem posts
+Upvotes posts using a provided **private active key** when a moderator uses a ☑ (default) on a Steem post link.
 ![stats.png](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1514307010/gq6pewla6ild673qpddn.png)
 
-#### Automatically remove old posts from allowed channels.
+#### Automatically remove old posts from allowed channels
 You can alter the age/channels in the code.
 
-#### Check if the author of a message/reaction has moderating privilages.
+#### Check if the author of a message/reaction has moderating privilages
 For that, use the **is_mod()** function.
 
 ## Known bugs:
