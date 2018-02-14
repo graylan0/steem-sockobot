@@ -15,22 +15,33 @@ The monitor.sh file is currently used to safely deploy the bot to a cloud server
 Convert the value of a given coin to its equal value in another coin.
 
 Example usage:
+```
+$convert 1000 steem-dollars bitcoin
 
-    $convert 1000 steem-dollars bitcoin
-    
-    You can receive 0.5727615537891285 **bitcoin** for 1000 **steem-dollars**.
+You can receive 0.5727615537891285 **bitcoin** for 1000 **steem-dollars**.
+```
 
-#### $delegate `<delegator>` `<value>` `<recipient>`
-Delegate SP to another Steemit account.
+#### $delegate `<delegator>` `<value>` `<delegatee>`
+Delegate SP from delegator to delegatee.
+
+Example usage:
+
+```
+$delegate amosbastian 0.1 jestemkioskiem
+
+To delegate using SteemConnect, click the link below: 
+https://v2.steemconnect.com/sign/delegateVestingShares?delegator=amosbastian&delegatee=jestemkioskiem&vesting_shares=0.1%20SP
+```
 
 #### $payout `<username>` `<days>` 
 Shows the potential payout of a given user's posts that have yet to pay out. The days argument is used to define a time period (up to 7 days) in which the payouts should be counted. The payout's value is counted based on coinmarketcap's prices.
 
 Example usage:
+```
+$payout jestemkioskiem 7
+``` 
 
-    $payout jestemkioskiem 5
-    
-    19.371USD
+https://i.imgur.com/yhshKbe.png
 
 #### $ping 
 Pings the bot to see if it is responsive.
@@ -41,33 +52,55 @@ Shows the current price of one of the given coin. The name of the coin must be t
 
 Example usage:
 
-    $price steem-dollars
+```
+$price steem-dollars
     
-    The current price of steem-dollars is: 5.35649 USD.
+The current price of steem-dollars is: 5.35649 USD.
+```
 
 #### $register `<username>`
 Gives user a memo with which, by sending a set amount of STEEM/SBD, the user will be able to gain a role on the discord server. 
 
 Example usage:
 
-    $register jestemkioskiem
+```
+$register jestemkioskiem
 
-    @Jestemkioskiem, to register send transaction for 1.0 STEEM to @jestemkioskiem with memo: 227857056542097408
+@Jestemkioskiem, to register send transaction for 1.0 STEEM to @jestemkioskiem with memo: 227857056542097408
+```
 
 #### $sp `<username>`
 Shows the current STEEM POWER and delegations of the user.
 
 Example usage:
 
-    $sp jestemkioskiem
-    
-    https://i.imgur.com/QnbHjgW.png
+```
+$sp jestemkioskiem
+```
+
+https://i.imgur.com/QnbHjgW.png
 
 #### $vote `<username>`
 Shows the user's estimated worth of an upvote at 100% voting power and current voting power.
 
+Example usage:
+
+```
+$vote jestemkioskiem
+```
+
+https://i.imgur.com/VXfD5EE.png
+
 #### $wallet `<username>`
 Shows the user's current STEEM, STEEM POWER, STEEM DOLLARS, estimated account value and estimated worth of a 100% VP upvote.
+
+Example usage:
+
+```
+$wallet jestemkioskiem
+```
+
+https://i.imgur.com/ck7gwbS.png
 
 ## Other functionality:
 
