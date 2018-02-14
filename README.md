@@ -11,50 +11,47 @@ The monitor.sh file is currently used to safely deploy the bot to a cloud server
 
 ## Commands:
 
-vote
-wallet
-
-### $convert `<value>` `<coin1>` `<coin2>`
+#### $convert `<value>` `<coin1>` `<coin2>`
 Convert the value of a given coin to its equal value in another coin.
 
-### $delegate `<delegator>` `<value>` `<recipient>`
+#### $delegate `<delegator>` `<value>` `<recipient>`
 Delegate SP to another Steemit account.
 
-### $payout `<username>` `<days>` 
+#### $payout `<username>` `<days>` 
 Shows the potential payout of a given user's posts that have yet to pay out. The days argument is used to define a time period (up to 7 days) in which the payouts should be counted. The payout's value is counted based on coinmarketcap's prices.
 ![payout.png](https://i.imgur.com/ILoilD8.png)
 
-### $ping 
+#### $ping 
 Pings the bot to see if it is responsive.
 ![ping.png](https://i.imgur.com/6kWkzjO.png)
 
-### $price `<SBD/STE/BTC>`
+#### $price `<SBD/STE/BTC>`
 Shows the current price of one of these coins (via coinmarketcap).
 ![price.png](https://i.imgur.com/IVmgejL.png)
 
-### $register `<username>`
+#### $register `<username>`
 Gives user a memo with which, by sending a set ammount of STEEM/SBD, the user will be able to gain a role on the discord server. 
 ![register.png](https://i.imgur.com/PiHwYBp.png)
 
-### $sp `<username>`
+#### $sp `<username>`
 Shows the current STEEM POWER, incoming delegations and outgoing delegations of the user.
 
-### $vote `<username>`
+#### $vote `<username>`
 Shows the user's estimated worth of an upvote at 100% voting power and current voting power.
 
-### $wallet `<username>`
+#### $wallet `<username>`
 Shows the user's current STEEM, STEEM POWER, STEEM DOLLARS, estimated account value and estimated worth of a 100% VP upvote.
 
 ## Other functionality:
 
-### Upvote steem posts...
+#### Upvote steem posts...
 ...using a provided **private active key** when a moderator uses a ☑ (default) on a steem post link.
 ![stats.png](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1514307010/gq6pewla6ild673qpddn.png)
 
-### Remove old posts from allowed channels.
+#### Automatically remove old posts from allowed channels.
 You can alter the age/channels in the code.
 
-### Check if the author of a message/reaction has moderating privilages.
+#### Check if the author of a message/reaction has moderating privilages.
 For that, use the **is_mod()** function.
 
 ## Known bugs:
