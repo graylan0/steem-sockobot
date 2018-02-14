@@ -65,9 +65,9 @@ Example usage:
 
 ```
 $register jestemkioskiem
-
-@Jestemkioskiem, to register send transaction for 1.0 STEEM to @jestemkioskiem with memo: 227857056542097408
 ```
+
+https://camo.githubusercontent.com/1d2f42f41dc0952608ab30a096ecc9313017fe1f/68747470733a2f2f692e696d6775722e636f6d2f506948775942702e706e67
 
 #### $sp `<username>`
 Shows the current STEEM POWER and delegations of the user.
