@@ -1,6 +1,6 @@
 ![](https://steemit-production-imageproxy-thumbnail.s3.amazonaws.com/U5dred14zXwb47ouJw2YJtYciEktt1K_1680x8400)
 
-Welcome to the steem-sockobot wiki! Here you will learn how to set up SockoBot on your own Discord server!
+Welcome to the steem-sockobot deployment tutorial! Here you will learn how to set up SockoBot on your own Discord server!
 
 # Creating a Discord application
 
