@@ -5,7 +5,7 @@ SockoBot aims to be the most open-source friendly steem related Discord bot out 
 
 ## Usage:
 
-To find out how to add SockoBot to your own Discord server go [here](https://github.com/amosbastian/steem-sockobot/wiki) and follow the tutorial.
+To find out how to add SockoBot to your own Discord server go [here](https://github.com/jestemkioskiem/steem-sockobot/HOW_TO_DEPLOY.md) and follow the tutorial.
 
 ## Commands:
 
