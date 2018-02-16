@@ -19,10 +19,14 @@ from discord.ext import commands
 # Here you can modify the bot's prefix and description and wether it sends help in direct messages or not. @client.command is strongly discouraged, edit your commands into the command() function instead.
 client = Bot(description="Socko-Bot", command_prefix='$', pm_help = True)
 
-BOT_USER_NAME =  os.getenv('NAME') # Put your bot's steem username in here.
-BOT_PRIVATE_POSTING_KEY = os.getenv('KEY') # Put your bot's private posting key in here. Don't worry, it's protected by an encrypted wallet (on your first run you will be asked to set the password via shell).
-SERVER_ID = '' # Put Discord server's ID
-ROLE_NAME = '' # Put Discord server's granted role name
+BOT_USER_NAME =  os.getenv('SB_NAME') # Put your bot's steem username in here.
+BOT_PRIVATE_POSTING_KEY = os.getenv('SB_KEY') # Put your bot's private posting key in here. Don't worry, it's protected by an encrypted wallet (on your first run you will be asked to set the password via shell).
+
+REGISTRATION = True # True to enable the use of the REGISTER command.
+if REGISTRATION:
+	ROLE_NAME = '' # Put Discord server's granted role name, used with the REGISTER command.
+	SERVER_ID = '394213227501846558' # Put Discord server's ID
+	minimum_payment = 1.000 # Price of registration, in STEEM
 
 s = Steem(nodes=["https://api.steemit.com", "https://rpc.buildteam.io"], keys=[BOT_PRIVATE_POSTING_KEY])
 steemd_nodes = [
@@ -54,7 +58,23 @@ voting_power = { # Decides how big of an upvote each channel gets.
 # 'channels_id' : 0-100 (% of your vote)
 }
 
-minimum_payment = 1.000 # 1 STEEM
+
+
+help_message = str('Please, refer to <https://github.com/Jestemkioskiem/steem-sockobot/blob/master/README.md> for more desriptive help. \n\n \
+**Commands and their arguments:**\n\n\
+%(p)s*ping*\n\
+%(p)s*convert* <value> <coin1> <coin2>\n\
+%(p)s*delegate* <delegator> <value> <delegatee>\n\
+%(p)s*payout* <username> <days>\n\
+%(p)s*price* <coin>\n\
+%(p)s*register* <username>\n\
+%(p)s*sp* <username>\n\
+%(p)s*vote* <username>\n\
+%(p)s*wallet* <username>\n\n\
+To get help regarding non-command functionality, refer to the github page\'s README.md file and it\'s Wiki, or contact the developer at Jestemkioskiem#5566') % {'p' : client.command_prefix}
+
+
+error_message = str("The commend you tried doesn't exist or you didn't provide enough arguments to run it. Use %shelp to see a list of commands and their arguments.") %(client.command_prefix)
 
 session = requests.Session()
 
@@ -70,13 +90,19 @@ async def command(msg,text):
 	if text.lower().startswith('ping'):
 		await client.send_message(msg.channel,":ping_pong: Pong!")
 
+	elif text.lower().startswith('help'):
+		if client.pm_help == True:
+			await client.send_message(msg.author, help_message)
+		else:
+			await client.send_message(msg.channel, help_message)
+
 	elif text.lower().startswith('delegate'):
 		try:
 			user_name = text.split(' ')[1].lower()
 			value = float(text.split(' ')[2])
 			target_user_name = text.split(' ')[3].lower()
 		except IndexError:
-			await client.send_message(msg.channel, str("Too few arguments provided"))
+			await client.send_message(msg.channel, error_message)
 			return None
 
 		await client.send_message(msg.channel, 'To delegate using **SteemConnect**, click the link below: \n %s' % (delegate(value, user_name, target_user_name)))
@@ -87,7 +113,7 @@ async def command(msg,text):
 			coin1 = text.split(' ')[2].lower()
 			coin2 = text.split(' ')[3].lower()
 		except IndexError:
-			await client.send_message(msg.channel, str("Too few arguments provided"))
+			await client.send_message(msg.channel, error_message)
 			return None
 
 		try:
@@ -105,7 +131,7 @@ async def command(msg,text):
 		try:
 			user_name = text.split(' ')[1]
 		except IndexError:
-			await client.send_message(msg.channel, str("Too few arguments provided"))
+			await client.send_message(msg.channel, error_message)
 			return 0
 		
 		acc = Account(user_name, steemd_instance=s)
@@ -131,7 +157,7 @@ async def command(msg,text):
 			embed.add_field(name="Steem Power", value=str(sp) + " ( " + str(sp_diff) + ")", inline=True)
 		embed.add_field(name="Estimated Account Value", value=str(calculate_estimated_acc_value(user_name)), inline=True)
 		embed.add_field(name="Estimated Vote Value", value=str(estimated_upvote) + " $", inline=True)
-		embed.set_footer(text="SockoBot - a Steem bot by Vctr#5566 (@jestemkioskiem)")
+		embed.set_footer(text="SockoBot - a Steem bot by Jestemkioskiem#5566 (@jestemkioskiem)")
 
 		await client.send_message(msg.channel, embed=embed)		
 
@@ -139,7 +165,7 @@ async def command(msg,text):
 		try:
 			user_name = text.split(' ')[1]
 		except IndexError:
-			await client.send_message(msg.channel, str("Too few arguments provided"))
+			await client.send_message(msg.channel, error_message)
 			return 0
 
 		acc = Account(user_name, steemd_instance=s)
@@ -167,7 +193,7 @@ async def command(msg,text):
 		try:
 			coin = text.split(' ')[1].lower()
 		except IndexError:
-			return str("Too few arguments provided")
+			await client.send_message(msg.channel, error_message)
 		
 		try: 
 			value = cmc.ticker(coin, limit="3", convert="USD")[0].get("price_usd", "none")
@@ -179,7 +205,7 @@ async def command(msg,text):
 		try:
 			user_name = text.split(' ')[1]
 		except IndexError:
-			await client.send_message(msg.channel, str("Too few arguments provided"))
+			await client.send_message(msg.channel, error_message)
 			return 0
 
 		try:
@@ -201,7 +227,7 @@ async def command(msg,text):
 		try:
 			user_name = text.split(' ')[1]
 		except IndexError:
-			await client.send_message(msg.channel, str("Too few arguments provided"))
+			await client.send_message(msg.channel, error_message)
 			return 0
 		
 		voting_power = round(float(Account(user_name)['voting_power'] / 100), 2)
@@ -217,12 +243,15 @@ async def command(msg,text):
 		try:
 			user_name = text.split(' ')[1]
 		except IndexError:
-			await client.send_message(msg.channel, str("Too few arguments provided"))
+			await client.send_message(msg.channel, error_message)
 			return 0
-		await client.send_message(msg.author, "<@" + msg.author.id + ">, to register send transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
+		if REGISTRATION:
+			await client.send_message(msg.author, "<@" + msg.author.id + ">, to register send transaction for " + str(minimum_payment) + " STEEM to @" + BOT_USER_NAME + " with memo: " + msg.author.id)
+		else:
+			await client.send_message(msg.author, "Registration is disabled on this server.")
 
 	else:
-		command_error = await client.send_message(msg.channel, "Wrong command.")
+		command_error = await client.send_message(msg.channel, error_message)
 		await asyncio.sleep(6)
 		await client.delete_message(command_error)
 
@@ -233,6 +262,7 @@ async def authorize(msg,user):
 		upvote_post(msg,BOT_USER_NAME)
 		await client.send_message(msg.channel, 'Post authored by **@' + str(p.author) + '** nominated by ' + str('<@'+ msg.author.id +'>') + ' o ID *' + str(msg.id) +'* was accepted by ' + str('<@'+ user.id +'>'))
 
+# Gets info about a post while taking in a message with said post.
 async def get_info(msg):
 	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
@@ -244,9 +274,10 @@ async def get_info(msg):
 	embed.add_field(name="Age", value=str(p.time_elapsed())[:-10] +" hours", inline=False)
 	embed.add_field(name="Payout", value=str(p.reward), inline=True)
 	embed.add_field(name="Payout in USD", value=await payout(p.reward,sbd_usd,ste_usd), inline=True)
-	embed.set_footer(text="SockoBot - a Steem bot by Vctr#5566 (@jestemkioskiem)")
+	embed.set_footer(text="SockoBot - a Steem bot by Jestemkioskiem#5566 (@jestemkioskiem)")
 	return embed
 
+# Checks if the post's age is between low and high, returns True or False accordingly.
 def check_age(post,low,high):
 	if post.time_elapsed() > datetime.timedelta(hours=low) and post.time_elapsed() < datetime.timedelta(hours=high):
 		return True
@@ -265,6 +296,7 @@ def is_mod(reaction, user):
 			break
 		else:
 			return False
+# Upvotes a post while taking in a message with said post.
 def upvote_post(msg, user):
 	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
@@ -315,8 +347,8 @@ def fetch_payouts_by_comments(user, days):
 
 	return total
 
+# Calculates given user's steem power.
 def calculate_steem_power(vests):
-
 	post = '{"id":1,"jsonrpc":"2.0","method":"get_dynamic_global_properties", "params": []}'
 	response = session_post('https://api.steemit.com', post)
 	data = json.loads(response.text)
@@ -326,7 +358,8 @@ def calculate_steem_power(vests):
 	total_vesting_shares = float(data['total_vesting_shares'].replace('VESTS', ''))
 
 	return round(total_vesting_fund_steem * (float(vests)/total_vesting_shares), 2)
-	
+
+# Calculates the estimated account value in USD.
 def calculate_estimated_acc_value(user_name):
 	steem_price = float(cmc.ticker('steem', limit="3", convert="USD")[0].get("price_usd", "none"))
 	sbd_price = float(cmc.ticker('steem-dollars', limit="3", convert="USD")[0].get("price_usd", "none"))
@@ -340,7 +373,7 @@ def calculate_estimated_acc_value(user_name):
 
 	return str(outcome) + " USD"
 
-
+# Calculates the estimated upvote of a given user.
 def calculate_estimated_upvote(user_name):
 	account = Account(user_name)
 	reward_fund = s.get_reward_fund()
@@ -352,7 +385,8 @@ def calculate_estimated_upvote(user_name):
 	estimated_upvote = rshares / float(reward_fund['recent_claims']) * float(reward_fund['reward_balance'].replace('STEEM', '')) * sbd_median_price
 	
 	return estimated_upvote
-			
+
+# Gets current median history price of SBD in the blockchain.
 def get_current_median_history_price():
 	price = 0.0
 
@@ -367,6 +401,7 @@ def get_current_median_history_price():
 	
 	return price
 
+# Takes in 3 arguments and turns them into a link, then returns it.
 def delegate(sp, user_name, target_user_name):
 	link = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=%s&delegatee=%s&vesting_shares=%s' % (user_name, target_user_name, round(sp, 3))
 	return link + '%20SP'
@@ -468,6 +503,7 @@ async def on_reaction_add(reaction, user):
 		botmsg = await client.get_message(reaction.message.channel, react_dict[reaction.message.id])
 		await client.delete_message(botmsg)
 if __name__ == '__main__': # Starting the bot.
-	client.loop.create_task(check_for_payments())
+	if REGISTRATION:
+		client.loop.create_task(check_for_payments())
 
-client.run(os.getenv('TOKEN'))
+client.run(os.getenv('SB_TOKEN'))
