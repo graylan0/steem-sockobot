@@ -129,6 +129,3 @@ You can alter the age/channels in the code.
 
 #### Check if the author of a message/reaction has moderating privilages
 For that, use the **is_mod()** function.
-
-## Known bugs:
-* 
