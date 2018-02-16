@@ -55,7 +55,9 @@ Now all that's left is to add your server's ID and the bot's role to `bot.py`. Y
 
 ![](https://i.imgur.com/5KVFzXp.png)
 
-Once you have this, open `bot.py` with your favourite text editor and modify the variables `SERVER_ID` and `ROLE_NAME` on line 24 and 25 respectively. This should look something like this, for example
+Once you have this, open `bot.py` with your favourite text editor and modify the variables `SERVER_ID` and `ROLE_NAME` on line 27 and 28 respectively. This should look something like this, for example.
+
+Mind, that this step is only necessary if you want to use the `$register` command. If you wish to use it, set the `REGISTRATION` variable on line 25 to `True`.
 
 ```
 SERVER_ID = '413394798255407114' # Discord server's ID
