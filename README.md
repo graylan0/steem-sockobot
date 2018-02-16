@@ -132,3 +132,8 @@ You can alter the age/channels in the code.
 
 #### Check if the author of a message/reaction has moderating privilages
 For that, use the **is_mod()** function.
+
+---
+
+#### Delegate to the Author and help the development!
+You can use the delegate command for that! My nickname is @jestemkioskiem . Thanks for Supporting SockoBot!
