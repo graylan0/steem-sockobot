@@ -39,11 +39,11 @@ $ gedit ~/.bashrc
 and add the follow to the end of the file
 
 ```
-export NAME="your-bots-name"
-export KEY="your-bots-key"
-export TOKEN="your-bots-token"
+export SB_NAME="your-bots-name"
+export SB_KEY="your-bots-key"
+export SB_TOKEN="your-bots-token"
 ```
-where `NAME` is a Steemit username, `KEY` is that account's private posting key and `TOKEN` is the bot's token we acquired in the previous section. Once you've done this, save the file and type the following command in your terminal
+where `SB_NAME` is a Steemit username, `SB_KEY` is that account's private posting key and `SB_TOKEN` is the bot's token we acquired in the previous section. Once you've done this, save the file and type the following command in your terminal
 
 ```
 $ source ~/.bashrc
