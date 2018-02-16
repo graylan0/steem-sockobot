@@ -1,4 +1,7 @@
 # steem-sockobot
+*SockoBot is copyrighted under the [MIT LICENSE](https://github.com/Jestemkioskiem/steem-sockobot/blob/master/LICENSE) by the owner of the [Jestemkioskiem](https://github.com/Jestemkioskiem/) Account © 2018.*
+
+
 A Steem bot for discord servers. Handles basic functionality and allows for easy addition of commands.
 
 SockoBot aims to be the most open-source friendly steem related Discord bot out there. By introducing a wide variety of commands and letting the owner easily remove them and/or add new functionality, the bot can easily be adapted to work in any Steem community Discord server. The bot is written in a beginner friendly way - the commands are all stored under a single function and so is most of the funcionality, for simplicity's sake, not even classes are present so **anyone** with basic Python knowledge can easily add extra functionality with the help of [steem-python's](http://steem.readthedocs.io/en/latest/index.html) and [discord.py's](https://discordpy.readthedocs.io/en/latest/) documentation respectively.
@@ -129,7 +132,3 @@ You can alter the age/channels in the code.
 
 #### Check if the author of a message/reaction has moderating privilages
 For that, use the **is_mod()** function.
-
-
-
-SockoBot is copyrighted under the [MIT LICENSE](https://github.com/Jestemkioskiem/steem-sockobot/blob/master/LICENSE) by the owner of the [Jestemkioskiem](https://github.com/Jestemkioskiem/) Account © 2018.
