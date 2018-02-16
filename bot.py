@@ -25,7 +25,7 @@ BOT_PRIVATE_POSTING_KEY = os.getenv('SB_KEY') # Put your bot's private posting k
 REGISTRATION = True # True to enable the use of the REGISTER command.
 if REGISTRATION:
 	ROLE_NAME = '' # Put Discord server's granted role name, used with the REGISTER command.
-	SERVER_ID = '394213227501846558' # Put Discord server's ID
+	SERVER_ID = '' # Put Discord server's ID
 	minimum_payment = 1.000 # Price of registration, in STEEM
 
 s = Steem(nodes=["https://api.steemit.com", "https://rpc.buildteam.io"], keys=[BOT_PRIVATE_POSTING_KEY])
