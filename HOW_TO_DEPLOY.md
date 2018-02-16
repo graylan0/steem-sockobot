@@ -39,11 +39,11 @@ $ gedit ~/.bashrc
 and add the follow to the end of the file
 
 ```
-export NAME="your-bots-name"
-export KEY="your-bots-key"
-export TOKEN="your-bots-token"
+export SB_NAME="your-bots-name"
+export SB_KEY="your-bots-key"
+export SB_TOKEN="your-bots-token"
 ```
-where `NAME` is a Steemit username, `KEY` is that account's private posting key and `TOKEN` is the bot's token we acquired in the previous section. Once you've done this, save the file and type the following command in your terminal
+where `SB_NAME` is a Steemit username, `SB_KEY` is that account's private posting key and `SB_TOKEN` is the bot's token we acquired in the previous section. Once you've done this, save the file and type the following command in your terminal
 
 ```
 $ source ~/.bashrc
@@ -55,11 +55,13 @@ Now all that's left is to add your server's ID and the bot's role to `bot.py`. Y
 
 ![](https://i.imgur.com/5KVFzXp.png)
 
-Once you have this, open `bot.py` with your favourite text editor and modify the variables `SERVER_ID` and `ROLE_NAME` on line 24 and 25 respectively. This should look something like this, for example
+Once you have this, open `bot.py` with your favourite text editor and modify the variables `SERVER_ID` and `ROLE_NAME` on line 27 and 28 respectively. This should look something like this, for example.
+
+Mind, that this step is only necessary if you want to use the `$register` command. If you wish to use it, set the `REGISTRATION` variable on line 25 to `True`.
 
 ```
 SERVER_ID = '413394798255407114' # Discord server's ID
-ROLE_NAME = 'SockoBot'           # Discord server's granted role name
+ROLE_NAME = 'VIP'           # Discord server's granted role name
 ```
 
 ### Running bot.py
