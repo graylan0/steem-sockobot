@@ -59,7 +59,7 @@ Once you have this, open `bot.py` with your favourite text editor and modify the
 
 ```
 SERVER_ID = '413394798255407114' # Discord server's ID
-ROLE_NAME = 'SockoBot'           # Discord server's granted role name
+ROLE_NAME = 'VIP'           # Discord server's granted role name
 ```
 
 ### Running bot.py
