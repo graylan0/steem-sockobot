@@ -129,3 +129,7 @@ You can alter the age/channels in the code.
 
 #### Check if the author of a message/reaction has moderating privilages
 For that, use the **is_mod()** function.
+
+
+
+SockoBot is copyrighted under the [MIT LICENSE](https://github.com/Jestemkioskiem/steem-sockobot/blob/master/LICENSE) by the owner of the [Jestemkioskiem](https://github.com/Jestemkioskiem/) Account © 2018.
