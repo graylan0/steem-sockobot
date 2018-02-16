@@ -59,7 +59,6 @@ voting_power = { # Decides how big of an upvote each channel gets.
 }
 
 
-
 help_message = str('Please, refer to <https://github.com/Jestemkioskiem/steem-sockobot/blob/master/README.md> for more desriptive help. \n\n \
 **Commands and their arguments:**\n\n\
 %(p)s*ping*\n\
@@ -74,7 +73,7 @@ help_message = str('Please, refer to <https://github.com/Jestemkioskiem/steem-so
 To get help regarding non-command functionality, refer to the github page\'s README.md file and it\'s Wiki, or contact the developer at Jestemkioskiem#5566') % {'p' : client.command_prefix}
 
 
-error_message = str("The commend you tried doesn't exist or you didn't provide enough arguments to run it. Use %shelp to see a list of commands and their arguments.") %(client.command_prefix)
+error_message = str("The command you tried doesn't exist or you didn't provide enough arguments to run it. Use %shelp to see a list of commands and their arguments.") %(client.command_prefix)
 
 session = requests.Session()
 
