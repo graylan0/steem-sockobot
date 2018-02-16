@@ -22,7 +22,7 @@ client = Bot(description="Socko-Bot", command_prefix='$', pm_help = True)
 BOT_USER_NAME =  os.getenv('SB_NAME') # Put your bot's steem username in here.
 BOT_PRIVATE_POSTING_KEY = os.getenv('SB_KEY') # Put your bot's private posting key in here. Don't worry, it's protected by an encrypted wallet (on your first run you will be asked to set the password via shell).
 
-REGISTRATION = True # True to enable the use of the REGISTER command.
+REGISTRATION = False # True to enable the use of the REGISTER command.
 if REGISTRATION:
 	ROLE_NAME = '' # Put Discord server's granted role name, used with the REGISTER command.
 	SERVER_ID = '' # Put Discord server's ID
