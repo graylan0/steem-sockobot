@@ -55,6 +55,7 @@ registered_users = {
 }
 
 voting_power = { # Decides how big of an upvote each channel gets.
+'base' : 100, # Basic value for channels not present in this dictionary.
 # 'channels_id' : 0-100 (% of your vote)
 }
 
@@ -265,6 +266,8 @@ async def authorize(msg,user):
 async def get_info(msg):
 	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
+	sbd_usd = cmc.ticker("steem-dollars", limit="3", convert="USD")[0].get("price_usd", "none")
+	ste_usd = cmc.ticker("steem", limit="3", convert="USD")[0].get("price_usd", "none")
 
 	embed=discord.Embed(color=0xe3b13c)
 	embed.add_field(name="Title", value=str(p.title), inline=False)
@@ -299,7 +302,10 @@ def is_mod(reaction, user):
 def upvote_post(msg, user):
 	link = str(msg.content).split(' ')[0]
 	p = Post(link.split('@')[1])
-	p.upvote(float(voting_power[msg.channel.id]),voter=user)
+	try:
+		p.upvote(float(voting_power[msg.channel.id]),voter=user)
+	except KeyError:
+		p.upvote(float(voting_power['base']),voter=user)
 	
 def session_post(url, post):
 	headers = {
@@ -488,7 +494,7 @@ async def on_ready():
 async def on_message(message):
 	
 	await del_old_mess(72)
-	if message.content.startswith('https//steemit') or message.content.startswith('https//busy') or message.content.startswith('https//utopian'):
+	if message.content.startswith('https://steemit') or message.content.startswith('https://busy') or message.content.startswith('https://utopian'):
 		embed = await get_info(message)
 		botmsg = await client.send_message(message.channel, embed=embed)
 		react_dict[message.id] = botmsg.id
